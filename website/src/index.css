@@ -1,0 +1,104 @@
+/**
+ * index.css - 全局样式配置
+ * 使用 Tailwind CSS 作为基础样式框架
+ * 包含自定义主题颜色、字体、动画、工具类等
+ */
+
+/* Tailwind CSS 基础指令 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * @layer base - 基础样式层
+ * 定义 HTML 元素的默认样式，如 body、html、selection 等
+ */
+@layer base {
+  /* 设置暗色模式 */
+  :root {
+    color-scheme: dark;
+  }
+
+  /* 平滑滚动 */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* 全局字体和背景样式 */
+  body {
+    font-family: "Manrope", system-ui, sans-serif;
+    background-color: #080b14;
+    color: #e2e8f0;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 文本选中样式 */
+  ::selection {
+    background-color: rgba(245, 158, 11, 0.3);
+    color: #fffbeb;
+  }
+}
+
+/**
+ * @layer utilities - 工具类层
+ * 定义自定义的 Tailwind 工具类
+ */
+@layer utilities {
+  /* 衬线标题字体 */
+  .font-display {
+    font-family: "Fraunces", Georgia, serif;
+  }
+
+  /* 文本平衡 */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* 渐变文字效果 */
+  .gradient-text {
+    background: linear-gradient(135deg, #f59e0b 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* 毛玻璃效果 */
+  .glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* 琥珀色发光效果 */
+  .glow-amber {
+    box-shadow: 0 0 60px -10px rgba(245, 158, 11, 0.4);
+  }
+
+  /* 紫罗兰色发光效果 */
+  .glow-violet {
+    box-shadow: 0 0 60px -10px rgba(139, 92, 246, 0.4);
+  }
+}
+
+/**
+ * 自定义滚动条样式
+ * 覆盖浏览器默认滚动条，与暗色主题保持一致
+ */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080b14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #283548;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b4a63;
+}
