@@ -1,51 +1,51 @@
 # FadeMemo
 
-A cross-platform memo application built with Flutter.
+一个使用 Flutter 构建的跨平台备忘录应用。
 
-## Features
+## 功能特性
 
-- Web, iOS, Android, Windows, macOS, and Linux support
-- Local storage using Hive
-- Beautiful and responsive UI
-- Light and dark themes
-- Search and filter memos
-- Category management
-- Markdown support
+- 支持 Web、iOS、Android、Windows、macOS 和 Linux
+- 使用 Hive 进行本地存储
+- 美观且响应式的用户界面
+- 支持浅色和深色主题
+- 备忘录搜索与筛选
+- 分类管理
+- 支持 Markdown 语法
 
-## Tech Stack
+## 技术栈
 
-- **Framework**: Flutter
-- **State Management**: Flutter Bloc
-- **Database**: Hive
+- **框架**: Flutter
+- **状态管理**: Flutter Bloc
+- **数据库**: Hive
 - **UI**: Material Design
 
-## Getting Started
+## 快速开始
 
-### Prerequisites
+### 环境要求
 
 - Flutter SDK (>= 3.2.0)
 - Dart SDK (>= 3.2.0)
 
-### Installation
+### 安装步骤
 
 ```bash
-# Clone the repository
+# 克隆仓库
 git clone https://github.com/Stone-People-Like/FadeMemo.git
 
-# Navigate to the project
+# 进入项目目录
 cd FadeMemo
 
-# Install dependencies
+# 安装依赖
 flutter pub get
 
-# Generate Hive adapters
+# 生成 Hive 适配器
 flutter pub run build_runner build
 
-# Run the app
+# 运行应用
 flutter run
 ```
 
-### Build for Different Platforms
+### 针对不同平台构建
 
 ```bash
 # Web
@@ -67,7 +67,7 @@ flutter build macos
 flutter build linux
 ```
 
-## Project Structure
+## 项目结构
 
 ```
 FadeMemo/
@@ -96,6 +96,6 @@ FadeMemo/
 └── test/
 ```
 
-## License
+## 开源协议
 
 MIT License
