@@ -1,0 +1,20 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FadeMemo Logo">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="lineFade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="100" height="100" rx="24" fill="url(#bgGrad)"/>
+  <g>
+    <rect x="30" y="32" width="60" height="6" rx="3" fill="url(#lineFade)"/>
+    <rect x="30" y="46" width="60" height="6" rx="3" fill="url(#lineFade)" opacity="0.85"/>
+    <rect x="30" y="60" width="44" height="6" rx="3" fill="url(#lineFade)" opacity="0.65"/>
+    <rect x="30" y="74" width="52" height="6" rx="3" fill="url(#lineFade)" opacity="0.45"/>
+    <rect x="30" y="88" width="36" height="6" rx="3" fill="url(#lineFade)" opacity="0.25"/>
+  </g>
+</svg>
