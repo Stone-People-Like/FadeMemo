@@ -1,21 +1,14 @@
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Features from "./components/Features";
-import Platforms from "./components/Platforms";
-import Preview from "./components/Preview";
-import CallToAction from "./components/CallToAction";
+import { HashRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./components/HomePage";
+import DownloadPage from "./components/DownloadPage";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-ink-950 text-slate-100">
-      <Navbar />
-      <main>
-        <Hero />
-        <Features />
-        <Platforms />
-        <Preview />
-        <CallToAction />
-      </main>
-    </div>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/download/:platform" element={<DownloadPage />} />
+      </Routes>
+    </HashRouter>
   );
 }

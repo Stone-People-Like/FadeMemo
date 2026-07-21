@@ -5,7 +5,9 @@
  */
 
 import { motion } from "framer-motion";
-import { Github, ArrowUpRight, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Github, ArrowUpRight, Heart, Monitor, Apple, Smartphone, Globe, Terminal } from "lucide-react";
+import { scrollToSection } from "../lib/utils";
 
 /**
  * GitHub 仓库链接
@@ -14,15 +16,15 @@ const GITHUB_URL = "https://github.com/Stone-People-Like/FadeMemo";
 
 /**
  * 下载链接配置
- * 包含各平台的标签、链接和图标
+ * 包含各平台的标签、路由参数和图标组件
  */
 const downloadLinks = [
-  { label: "Web", href: "#", icon: "🌐" },
-  { label: "iOS", href: "#", icon: "" },
-  { label: "Android", href: "#", icon: "🤖" },
-  { label: "Windows", href: "#", icon: "⊞" },
-  { label: "macOS", href: "#", icon: "" },
-  { label: "Linux", href: "#", icon: ">_" },
+  { label: "Web", platform: "web", Icon: Globe },
+  { label: "iOS", platform: "ios", Icon: Apple },
+  { label: "Android", platform: "android", Icon: Smartphone },
+  { label: "Windows", platform: "windows", Icon: Monitor },
+  { label: "macOS", platform: "macos", Icon: Apple },
+  { label: "Linux", platform: "linux", Icon: Terminal },
 ];
 
 /**
@@ -59,24 +61,30 @@ export default function CallToAction() {
 
           {/* 平台下载按钮网格 */}
           <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {downloadLinks.map((link, index) => (
-              <motion.a
+            {downloadLinks.map((link, index) => {
+                const Icon = link.Icon;
+                return (
+              <motion.div
                 key={link.label}
-                href={link.href}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-ink-900/60 px-4 py-5 transition-all hover:-translate-y-1 hover:border-amber-500/40 hover:bg-ink-800"
               >
-                <span className="text-2xl font-bold text-white transition-colors group-hover:text-amber-400">
-                  {link.icon}
-                </span>
-                <span className="text-sm font-medium text-slate-300">
-                  {link.label}
-                </span>
-              </motion.a>
-            ))}
+                <Link
+                  to={`/download/${link.platform}`}
+                  className="group flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-ink-900/60 px-4 py-5 transition-all hover:-translate-y-1 hover:border-amber-500/40 hover:bg-ink-800"
+                >
+                  <span className="flex h-8 items-center justify-center text-2xl text-white transition-colors group-hover:text-amber-400">
+                    <Icon className="h-6 w-6" />
+                  </span>
+                  <span className="text-sm font-medium text-slate-300">
+                    {link.label}
+                  </span>
+                </Link>
+              </motion.div>
+                );
+              })}
           </div>
 
           {/* 主 CTA 按钮：访问 GitHub */}
@@ -84,7 +92,7 @@ export default function CallToAction() {
             <a
               href={GITHUB_URL}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="group inline-flex items-center gap-2 rounded-full bg-amber-500 px-8 py-4 text-base font-semibold text-ink-950 transition-all hover:bg-amber-400 hover:shadow-xl hover:shadow-amber-500/40"
             >
               <Github className="h-5 w-5" />
@@ -110,11 +118,11 @@ export default function CallToAction() {
 
           {/* 页脚链接 */}
           <div className="flex items-center gap-6 text-sm text-slate-400">
-            <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="transition-colors hover:text-amber-400">
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-amber-400">
               GitHub
             </a>
-            <a href="#features" className="transition-colors hover:text-amber-400">功能</a>
-            <a href="#download" className="transition-colors hover:text-amber-400">下载</a>
+            <button onClick={() => scrollToSection("features")} className="transition-colors hover:text-amber-400">功能</button>
+            <button onClick={() => scrollToSection("download")} className="transition-colors hover:text-amber-400">下载</button>
           </div>
 
           {/* 版权信息 */}
