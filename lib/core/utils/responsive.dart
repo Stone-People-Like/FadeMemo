@@ -2,6 +2,19 @@ import 'package:flutter/widgets.dart';
 
 import '../constants/app_constants.dart';
 
+/// 响应式断点工具 — 跟 Responsive 工具类绑定使用
+enum DeviceFormFactor {
+  mobile,
+  tablet,
+  desktop,
+}
+
+extension DeviceFormFactorX on DeviceFormFactor {
+  bool get isMobile => this == DeviceFormFactor.mobile;
+  bool get isTablet => this == DeviceFormFactor.tablet;
+  bool get isDesktop => this == DeviceFormFactor.desktop;
+}
+
 /// 响应式工具 — 把屏幕宽度映射为设备形态 / 数值常量
 class Responsive {
   Responsive._();

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../data/models/memo_model.dart';
+import '../../../data/models/memo.dart';
 
 /// 桌面端左侧记忆库
 ///

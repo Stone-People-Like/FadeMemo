@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/responsive.dart';
-import '../../../data/models/memo_model.dart';
-import '../../canvas/widgets/fading_canvas.dart';
+import '../../../data/models/memo.dart';
+import '../../mobile/canvas/fading_canvas.dart';
 
 /// 桌面端中央主面板
 ///

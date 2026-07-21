@@ -69,16 +69,3 @@ class AppConstants {
   /// 自动刷新时间线（毫秒）
   static const int timelineTickMs = 100;
 }
-
-/// 响应式断点工具
-enum DeviceFormFactor {
-  mobile,
-  tablet,
-  desktop,
-}
-
-extension DeviceFormFactorX on DeviceFormFactor {
-  bool get isMobile => this == DeviceFormFactor.mobile;
-  bool get isTablet => this == DeviceFormFactor.tablet;
-  bool get isDesktop => this == DeviceFormFactor.desktop;
-}

@@ -2,8 +2,8 @@ import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../models/char_state_model.dart';
-import '../models/memo_model.dart';
+import '../models/char_state.dart';
+import '../models/memo.dart';
 
 /// 笔记仓库（基于 Hive）
 ///

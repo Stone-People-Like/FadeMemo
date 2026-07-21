@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/forgetting/forgetting_engine.dart';
 import '../../../core/forgetting/memory_state.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../data/models/memo_model.dart';
+import '../../../data/models/memo.dart';
 
 /// 桌面端底部状态栏
 ///

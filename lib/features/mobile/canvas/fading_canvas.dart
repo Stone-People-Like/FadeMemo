@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../data/models/char_state_model.dart';
-import '../../../data/models/memo_model.dart';
+import '../../../data/models/char_state.dart';
+import '../../../data/models/memo.dart';
 import 'char_cell.dart';
 
 /// 核心遗忘展示区

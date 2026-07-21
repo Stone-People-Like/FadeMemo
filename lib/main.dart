@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 
 import 'app/app.dart';
 import 'core/constants/app_constants.dart';
-import 'data/models/char_state_model.dart';
-import 'data/models/memo_model.dart';
+import 'data/models/char_state.dart';
+import 'data/models/memo.dart';
 import 'data/models/app_settings.dart';
 import 'data/repositories/memo_repository.dart';
 

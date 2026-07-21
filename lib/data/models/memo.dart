@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import 'char_state_model.dart';
+import 'char_state.dart';
 
 /// 一条笔记
 ///

@@ -5,29 +5,31 @@ import '../../core/constants/app_constants.dart';
 import '../../core/forgetting/forgetting_engine.dart';
 import '../../core/utils/responsive.dart';
 import '../../data/models/app_settings.dart';
-import '../../data/models/memo_model.dart';
+import '../../data/models/memo.dart';
 import '../../data/repositories/memo_repository.dart';
-import '../canvas/widgets/fading_canvas.dart';
-import '../canvas/widgets/memory_clock.dart';
-import '../controls/widgets/control_panel.dart';
-import '../editor/widgets/memo_editor.dart';
-import '../library/widgets/memo_library.dart';
+import 'canvas/fading_canvas.dart';
+import 'controls/control_panel.dart';
+import 'editor/memo_editor.dart';
+import 'library/memo_library.dart';
+import 'widgets/memory_clock.dart';
 
-/// 主屏幕 — 三段式固定布局：
+/// 移动端主屏幕（Web / Android / iOS 通用）
+///
+/// 三段式固定布局：
 ///   1. 顶部：MemoEditor（输入新内容）
 ///   2. 中部：FadingCanvas（核心遗忘展示区）
 ///   3. 底部：ControlPanel（控制面板）
 ///
-/// 桌面端：左侧常驻 MemoLibrary 侧栏
-/// 手机端：AppBar 入口打开抽屉式 MemoLibrary
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+/// 大屏（≥ 900px）：左侧常驻 MemoLibrary 侧栏
+/// 小屏：AppBar 菜单入口打开抽屉式 MemoLibrary
+class MobileHomeScreen extends StatefulWidget {
+  const MobileHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MobileHomeScreen> createState() => _MobileHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MobileHomeScreenState extends State<MobileHomeScreen> {
   late MemoRepository _repo;
   Memo? _current;
   bool _initialized = false;

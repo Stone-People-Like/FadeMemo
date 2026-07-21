@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/forgetting/forgetting_engine.dart';
 import '../../data/models/app_settings.dart';
-import '../../data/models/memo_model.dart';
+import '../../data/models/memo.dart';
 import '../../data/repositories/memo_repository.dart';
 import 'shortcuts/app_shortcuts.dart';
 import 'widgets/desktop_menu_bar.dart';

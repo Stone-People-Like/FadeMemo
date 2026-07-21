@@ -9,7 +9,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/forgetting/forgetting_engine.dart';
 import '../../../core/forgetting/memory_state.dart';
 import '../../../core/utils/garbled_glyphs.dart';
-import '../../../data/models/char_state_model.dart';
+import '../../../data/models/char_state.dart';
 
 /// 单字符渲染单元
 ///

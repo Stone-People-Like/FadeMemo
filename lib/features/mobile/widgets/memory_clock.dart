@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/forgetting/forgetting_engine.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../data/models/memo_model.dart';
+import '../../../data/models/memo.dart';
 
 /// 「记忆时钟」— 显示当前 Memo 已存在的时间
 ///
