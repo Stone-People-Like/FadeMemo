@@ -5,10 +5,12 @@
 
 import Navbar from "./Navbar";
 import Hero from "./Hero";
+import About from "./About";
 import Features from "./Features";
 import Platforms from "./Platforms";
 import Preview from "./Preview";
 import CallToAction from "./CallToAction";
+import BackToTop from "./BackToTop";
 
 export default function HomePage() {
   return (
@@ -17,10 +19,12 @@ export default function HomePage() {
       <main>
         <Hero />
         <Features />
+        <About />
         <Platforms />
         <Preview />
         <CallToAction />
       </main>
+      <BackToTop />
     </div>
   );
 }
