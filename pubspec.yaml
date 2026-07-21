@@ -1,6 +1,6 @@
 name: fade_memo
 description: 记忆遗忘模拟器 — 一款模拟人类记忆自然遗忘规律的跨端笔记 App
-version: 1.0.0+1
+version: 0.0.1-alpha.1+1
 
 environment:
   sdk: '>=3.2.0 <4.0.0'

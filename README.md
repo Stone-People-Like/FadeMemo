@@ -12,7 +12,7 @@
 
 <br>
 
-[![Version](https://img.shields.io/badge/Version-1.0.0-6366F1?style=for-the-badge)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-0.0.1--alpha.1-6366F1?style=for-the-badge)](./CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](./LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-3.2+-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Platforms](https://img.shields.io/badge/Platforms-5-blue?style=for-the-badge)](#-平台支持)
