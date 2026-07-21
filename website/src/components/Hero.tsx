@@ -7,6 +7,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, ChevronDown } from "lucide-react";
 import { stats } from "../data/content";
+import { scrollToSection } from "../lib/utils";
 
 export default function Hero() {
   return (
@@ -81,20 +82,20 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.5 }}
             className="mt-10 flex flex-wrap items-center gap-4"
           >
-            <a
-              href="#download"
+            <button
+              onClick={() => scrollToSection("download")}
               className="group inline-flex items-center gap-2 rounded-full bg-amber-500 px-7 py-3.5 text-base font-semibold text-ink-950 transition-all hover:bg-amber-400 hover:shadow-xl hover:shadow-amber-500/40"
             >
               免费下载
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
-            <a
-              href="#features"
+            </button>
+            <button
+              onClick={() => scrollToSection("features")}
               className="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-base font-medium text-white transition-all hover:border-white/30 hover:bg-white/5"
             >
               了解更多
               <ChevronDown className="h-4 w-4" />
-            </a>
+            </button>
           </motion.div>
 
           <motion.div

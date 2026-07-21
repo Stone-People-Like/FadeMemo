@@ -98,6 +98,7 @@ export const platforms: Platform[] = [
  */
 export const navLinks = [
   { label: "功能", href: "#features" },
+  { label: "介绍", href: "#about" },
   { label: "平台", href: "#platforms" },
   { label: "预览", href: "#preview" },
   { label: "下载", href: "#download" },
