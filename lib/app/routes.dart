@@ -1,19 +1,15 @@
 import 'package:flutter/widgets.dart';
-import 'package:fade_memo/features/memos/screens/memo_list_screen.dart';
-import 'package:fade_memo/features/memos/screens/memo_detail_screen.dart';
-import 'package:fade_memo/features/categories/screens/category_screen.dart';
-import 'package:fade_memo/features/settings/screens/settings_screen.dart';
 
+import '../features/home/home_screen.dart';
+
+/// 路由表
+/// 当前版本只有一个 Home 屏幕，预留路由命名空间方便后续扩展。
 class Routes {
-  static const String home = '/';
-  static const String memoDetail = '/memo-detail';
-  static const String categories = '/categories';
-  static const String settings = '/settings';
+  Routes._();
 
-  static Map<String, WidgetBuilder> routes = {
-    home: (context) => const MemoListScreen(),
-    memoDetail: (context) => const MemoDetailScreen(),
-    categories: (context) => const CategoryScreen(),
-    settings: (context) => const SettingsScreen(),
-  };
+  static const String home = '/';
+
+  static Map<String, WidgetBuilder> get routes => {
+        home: (_) => const HomeScreen(),
+      };
 }

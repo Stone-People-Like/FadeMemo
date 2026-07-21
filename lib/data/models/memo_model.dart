@@ -1,69 +1,123 @@
 import 'package:hive/hive.dart';
-import 'package:equatable/equatable.dart';
 
-part 'memo_model.g.dart';
+import 'char_state_model.dart';
 
-@HiveType(typeId: 0)
-class MemoModel extends Equatable {
-  @HiveField(0)
-  final String id;
+/// 一条笔记
+///
+/// 每条笔记保存为独立 Hive 对象，按 id 索引。
+/// 字符状态以 List<CharState> 存储，逐字携带遗忘信息。
+class Memo {
+  /// 唯一 ID
+  String id;
 
-  @HiveField(1)
-  final String title;
+  /// 标题（用于列表展示、可选）
+  String title;
 
-  @HiveField(2)
-  final String content;
+  /// 原始文本（不可变快照，便于重建 / 重新分词）
+  String rawContent;
 
-  @HiveField(3)
-  final String categoryId;
+  /// 逐字符状态（与 rawContent 一一对应）
+  List<CharState> chars;
 
-  @HiveField(4)
-  final DateTime createdAt;
+  /// 创建时间
+  DateTime createdAt;
 
-  @HiveField(5)
-  final DateTime updatedAt;
+  /// 更新时间
+  DateTime updatedAt;
 
-  @HiveField(6)
-  final bool isArchived;
+  /// 该笔记的全局重要性（所有字符默认此值，可在编辑时调整）
+  double importance;
 
-  const MemoModel({
+  Memo({
     required this.id,
-    required this.title,
-    required this.content,
-    required this.categoryId,
+    this.title = '',
+    required this.rawContent,
+    required this.chars,
     required this.createdAt,
     required this.updatedAt,
-    this.isArchived = false,
+    this.importance = 0.85,
   });
 
-  MemoModel copyWith({
+  /// 当前纯文本（基于 charStates 拼接，仅作为回退）
+  String get content => chars.map((c) => c.char).join();
+
+  Memo copyWith({
     String? id,
     String? title,
-    String? content,
-    String? categoryId,
+    String? rawContent,
+    List<CharState>? chars,
     DateTime? createdAt,
     DateTime? updatedAt,
-    bool? isArchived,
+    double? importance,
   }) {
-    return MemoModel(
+    return Memo(
       id: id ?? this.id,
       title: title ?? this.title,
-      content: content ?? this.content,
-      categoryId: categoryId ?? this.categoryId,
+      rawContent: rawContent ?? this.rawContent,
+      chars: chars ?? this.chars,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      isArchived: isArchived ?? this.isArchived,
+      importance: importance ?? this.importance,
+    );
+  }
+}
+
+/// Memo 的 Hive TypeAdapter
+///
+/// 字段编号：
+///   0: id (String)
+///   1: title (String)
+///   2: rawContent (String)
+///   3: chars (List<CharState>)
+///   4: createdAt (int millis)
+///   5: updatedAt (int millis)
+///   6: importance (double)
+class MemoAdapter extends TypeAdapter<Memo> {
+  @override
+  final int typeId = 2;
+
+  @override
+  Memo read(BinaryReader reader) {
+    final fieldCount = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < fieldCount; i++) reader.readByte(): reader.read(),
+    };
+    return Memo(
+      id: fields[0] as String,
+      title: (fields[1] as String?) ?? '',
+      rawContent: fields[2] as String,
+      chars: (fields[3] as List).cast<CharState>(),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(fields[4] as int),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(fields[5] as int),
+      importance: (fields[6] as double?) ?? 0.85,
     );
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        title,
-        content,
-        categoryId,
-        createdAt,
-        updatedAt,
-        isArchived,
-      ];
+  void write(BinaryWriter writer, Memo obj) {
+    writer
+      ..writeByte(7)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.rawContent)
+      ..writeByte(3)
+      ..write(obj.chars)
+      ..writeByte(4)
+      ..write(obj.createdAt.millisecondsSinceEpoch)
+      ..writeByte(5)
+      ..write(obj.updatedAt.millisecondsSinceEpoch)
+      ..writeByte(6)
+      ..write(obj.importance);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MemoAdapter && other.typeId == typeId;
 }
