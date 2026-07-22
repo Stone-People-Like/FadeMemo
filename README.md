@@ -1,32 +1,25 @@
-<div align="center">
-
-<img src="./assets/logo.svg" width="120" height="120" alt="FadeMemo Logo"/>
-
 # FadeMemo
 
 ### 记忆遗忘模拟器 · Memory Forgetting Simulator
 
-<sub>基于艾宾浩斯曲线 · 让文字随时间逐渐模糊、错乱、最终消失</sub>
+基于艾宾浩斯曲线，让文字随时间逐渐模糊、错乱、最终消失。
 
 [English](./README_EN.md) · 简体中文 · [更新日志](./CHANGELOG.md) · [报告 Bug](../../issues) · [提交功能](../../issues)
 
-<br>
+| 项目 | 信息 |
+| :--- | :--- |
+| 当前版本 | `0.0.1-alpha.2` |
+| 开源协议 | MIT |
+| 框架 | Flutter `>= 3.2.0` |
+| 本地存储 | Hive 2.2 |
+| 支持平台 | Web / Android / iOS / macOS / Linux |
+| 贡献方式 | PRs Welcome |
 
-[![Version](https://img.shields.io/badge/Version-0.0.1--alpha.2-6366F1?style=for-the-badge)](./CHANGELOG.md)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](./LICENSE)
-[![Flutter](https://img.shields.io/badge/Flutter-3.2+-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
-[![Platforms](https://img.shields.io/badge/Platforms-5-blue?style=for-the-badge)](#-平台支持)
-[![Hive](https://img.shields.io/badge/Hive-2.2-FFC107?style=for-the-badge)](https://pub.dev/packages/hive)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge)](../../pulls)
-[![Stars](https://img.shields.io/github/stars/Stone-People-Like/FadeMemo?style=for-the-badge&logo=github)](../../stargazers)
-
-</div>
-
-<br>
-
-## 概念
+## 项目简介
 
 FadeMemo 是一款**反传统**的笔记 App：不主打「永久存储」，而是模拟人类记忆的自然遗忘规律。
+
+它基于艾宾浩斯遗忘曲线模拟文字记忆强度，让笔记内容随时间逐渐模糊、错乱并消失，帮助用户用更沉浸的方式记录、回望和处理记忆。
 
 > 你写下的每一个字，都会被时间一点点侵蚀。
 > 它会先变得模糊，再开始错乱，最终彻底消失。
@@ -36,91 +29,31 @@ FadeMemo 是一款**反传统**的笔记 App：不主打「永久存储」，而
 
 ---
 
-## 核心特性
+## 功能特性
 
-<table>
-  <thead>
-    <tr>
-      <th width="40"></th>
-      <th width="200">特性</th>
-      <th>描述</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      </td>
-      <td><b>跨 5 平台</b></td>
-      <td>Flutter 一套代码，运行于 Web、Android、iOS、macOS、Linux</td>
-    </tr>
-    <tr>
-      <td align="center">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-      </td>
-      <td><b>单字符颗粒度</b></td>
-      <td>不再以段落为单位，每个字符独立携带强度 / 重要性 / 时间戳</td>
-    </tr>
-    <tr>
-      <td align="center">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </td>
-      <td><b>艾宾浩斯曲线</b></td>
-      <td>指数衰减公式 <code>strength = importance × exp(-λ·t<sup>β</sup>)</code>，β 与重要性负相关</td>
-    </tr>
-    <tr>
-      <td align="center">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      </td>
-      <td><b>四态视觉退化</b></td>
-      <td>清晰 / 模糊（高斯+抖动）/ 错乱（字符替换+RGB偏移）/ 消失（透明占位）</td>
-    </tr>
-    <tr>
-      <td align="center">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </td>
-      <td><b>触摸 / Hover 擦亮</b></td>
-      <td>手机点击单字擦亮，桌面鼠标 hover 连续擦亮（60ms 节流）</td>
-    </tr>
-    <tr>
-      <td align="center">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-      </td>
-      <td><b>三动作控制</b></td>
-      <td>回忆擦亮 / 加速失忆（强度 ×0.5）/ 重置记忆</td>
-    </tr>
-    <tr>
-      <td align="center">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-      </td>
-      <td><b>速度可调</b></td>
-      <td>全局 λ 滑块对数刻度，从「保持数天」到「数秒即逝」自由切换</td>
-    </tr>
-    <tr>
-      <td align="center">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      </td>
-      <td><b>浅 / 深主题</b></td>
-      <td>奶白 + 墨青双主题，Noto Serif SC 衬线字体，低饱和文艺调</td>
-    </tr>
-  </tbody>
-</table>
+| 特性 | 描述 |
+| :--- | :--- |
+| **跨 5 平台** | Flutter 一套代码，运行于 Web、Android、iOS、macOS、Linux |
+| **单字符颗粒度** | 不再以段落为单位，每个字符独立携带强度 / 重要性 / 时间戳 |
+| **艾宾浩斯曲线** | 指数衰减公式 `strength = importance × exp(-λ·t^β)`，β 与重要性负相关 |
+| **四态视觉退化** | 清晰 / 模糊（高斯+抖动）/ 错乱（字符替换+RGB 偏移）/ 消失（透明占位） |
+| **触摸 / Hover 擦亮** | 手机点击单字擦亮，桌面鼠标 hover 连续擦亮（60ms 节流） |
+| **三动作控制** | 回忆擦亮 / 加速失忆（强度 ×0.5）/ 重置记忆 |
+| **速度可调** | 全局 λ 滑块对数刻度，从「保持数天」到「数秒即逝」自由切换 |
+| **浅 / 深主题** | 奶白 + 墨青双主题，Noto Serif SC 衬线字体，低饱和文艺调 |
 
 ---
 
 ## 技术栈
 
-<div align="center">
-
-| | 类别 | 技术 |
-| :---: | :--- | :--- |
-| <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> | **框架** | ![Flutter](https://img.shields.io/badge/Flutter-3.44.7-02569B?style=flat-square&logo=flutter&logoColor=white) |
-| <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/></svg> | **本地存储** | ![Hive](https://img.shields.io/badge/Hive-2.2-FFC107?style=flat-square) |
-| <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> | **配置存储** | ![SharedPreferences](https://img.shields.io/badge/SharedPreferences-2.3-4A86E5?style=flat-square) |
-| <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg> | **状态管理** | ![Provider](https://img.shields.io/badge/Provider-6.1-FF6F00?style=flat-square) |
-| <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg> | **字体** | ![Noto Serif SC](https://img.shields.io/badge/Noto_Serif_SC-6.3-000000?style=flat-square) |
-
-</div>
+| 类别 | 技术 |
+| :--- | :--- |
+| **框架** | Flutter 3.44.7 |
+| **语言** | Dart 3.12.2 |
+| **本地存储** | Hive 2.2 |
+| **配置存储** | SharedPreferences 2.3 |
+| **状态管理** | Provider 6.1 |
+| **字体** | Noto Serif SC |
 
 ---
 
@@ -140,14 +73,19 @@ FadeMemo 是一款**反传统**的笔记 App：不主打「永久存储」，而
 
 ## 目录
 
-- [概念](#概念)
-- [核心特性](#核心特性)
+- [项目简介](#项目简介)
+- [功能特性](#功能特性)
 - [技术栈](#技术栈)
 - [平台支持](#平台支持)
 - [快速开始](#快速开始)
+- [配置说明](#配置说明)
+- [使用说明](#使用说明)
+- [编译 / 打包 / 部署](#编译--打包--部署)
 - [项目结构](#项目结构)
 - [算法说明](#算法说明)
-- [版本历史](./CHANGELOG.md)
+- [测试](#测试)
+- [版本说明](#版本说明)
+- [常见问题 FAQ](#常见问题-faq)
 - [参与贡献](#参与贡献)
 - [开源协议](#开源协议)
 
@@ -162,26 +100,120 @@ FadeMemo 是一款**反传统**的笔记 App：不主打「永久存储」，而
 | **Flutter SDK** | `>= 3.2.0`（推荐 3.44+） |
 | **Dart SDK** | `>= 3.2.0`（随 Flutter 安装） |
 | **IDE** | VS Code / Android Studio / IntelliJ |
+| **Android 构建** | Android Studio + Android SDK |
+| **iOS / macOS 构建** | macOS + Xcode |
 
-### 安装与运行
+### 拉取代码
 
 ```bash
-# 克隆仓库
 git clone https://github.com/Stone-People-Like/FadeMemo.git
-
-# 进入项目
 cd FadeMemo
+```
 
-# 安装依赖
+### 安装依赖
+
+```bash
 flutter pub get
+```
 
-# 启动应用
+项目当前没有必填的外部配置文件或初始化脚本。完成依赖安装后，即可直接本地运行。
+
+### 本地运行
+
+```bash
 flutter run
 ```
 
 > 💡 运行 `flutter doctor` 检查环境是否完整。
 
-### 打包发布
+### Web 调试
+
+```bash
+flutter run -d chrome
+```
+
+启动后 Flutter 会在终端输出本地访问地址，通常形如：
+
+```text
+http://localhost:xxxxx/
+```
+
+### 停止运行
+
+在终端按下：
+
+```bash
+Ctrl + C
+```
+
+### 常用调试命令
+
+```bash
+flutter doctor
+flutter analyze
+flutter test
+```
+
+---
+
+## 配置说明
+
+项目主要配置文件如下：
+
+- `pubspec.yaml`：Flutter 依赖、资源文件、版本号配置
+- `analysis_options.yaml`：Dart / Flutter 静态检查规则
+- `build.yaml`：构建相关配置
+- `assets/`：应用静态资源目录
+
+目前项目暂无必须配置的环境变量。
+
+### 多环境说明
+
+当前版本以本地应用为主，没有区分开发 / 测试 / 生产环境的后端配置。不同平台的构建差异主要由 Flutter 平台目录和对应 SDK 决定。
+
+---
+
+## 使用说明
+
+FadeMemo 是一个本地运行的 Flutter 应用，目前没有后端接口。
+
+基本使用流程：
+
+1. 新建或选择一条记忆
+2. 输入文字内容
+3. 文字会随时间逐渐模糊、错乱并消失
+4. 点击或 Hover 单个文字可以短暂擦亮
+5. 通过控制面板调整遗忘速度、重置记忆或加速失忆
+
+### 官网路由
+
+`website/` 是产品官网，基于 Vite + React 构建，当前使用 HashRouter：
+
+| 路由 | 页面 | 说明 |
+| :--- | :--- | :--- |
+| `/` | `HomePage` | 产品介绍首页 |
+| `/download/:platform` | `DownloadPage` | 指定平台下载页 |
+
+### 官网组件
+
+官网主要组件位于 `website/src/components/`：
+
+- `Navbar`：顶部导航
+- `Hero`：首页首屏
+- `Features`：功能展示
+- `Platforms`：平台支持
+- `Preview`：产品预览
+- `DownloadPage`：下载页
+
+### 后端接口
+
+当前项目暂无后端服务，也没有需要调用的 HTTP API。
+
+---
+
+## 编译 / 打包 / 部署
+
+### Flutter 应用
 
 ```bash
 flutter build web              # → build/web/
@@ -192,15 +224,31 @@ flutter build macos            # → macOS DMG（需 Xcode）
 flutter build linux            # → Linux
 ```
 
+### 产品官网
+
+```bash
+cd website
+npm install
+npm run dev       # 本地开发，默认由 Vite 输出访问地址
+npm run build     # 生产构建，产物位于 website/dist/
+npm run preview   # 本地预览生产构建
+```
+
+### 部署说明
+
+- Flutter Web 产物位于 `build/web/`，可部署到任意静态网站服务。
+- 官网产物位于 `website/dist/`，可部署到 Vercel、Netlify、GitHub Pages 或其他静态托管服务。
+- Android / iOS / macOS / Linux / Windows 需要在对应平台 SDK 环境中构建。
+
 ---
 
 ## 项目结构
 
-```
+```text
 FadeMemo/
 ├── lib/
 │   ├── main.dart                       # 入口：Hive 初始化 + Provider 装配
-│   ├── app/                            # MaterialApp / 路由
+│   ├── app/                            # MaterialApp / 平台路由
 │   ├── core/
 │   │   ├── constants/                  # 算法阈值 / 默认值 / 断点
 │   │   ├── forgetting/                 # 遗忘引擎 + 状态枚举
@@ -210,14 +258,17 @@ FadeMemo/
 │   │   ├── models/                     # CharState / Memo / AppSettings
 │   │   └── repositories/               # Hive 仓库
 │   └── features/
-│       ├── home/                       # 主屏（三段式布局）
-│       ├── editor/                     # 顶部输入（自动保存）
-│       ├── canvas/                     # 中部展示（核心特效）
-│       ├── controls/                   # 底部控制面板
-│       └── library/                    # 记忆库侧栏
+│       ├── mobile/                     # 移动端界面：编辑器 / 画布 / 控制面板 / 记忆库
+│       └── desktop/                    # 桌面端界面：菜单栏 / 侧栏 / 工具栏 / 状态栏
 ├── assets/                             # logo.svg
 ├── test/                               # 10 个单元测试
-└── platform configs                    # web/android/ios/macos/linux
+│   ├── core/                           # 遗忘算法测试
+│   └── data/                           # 数据模型测试
+├── website/                            # 产品官网（Vite + React）
+├── android/ ios/ web/                  # 移动端与 Web 平台配置
+├── macos/ linux/ windows/              # 桌面端平台配置
+├── pubspec.yaml                        # Flutter 依赖与资源配置
+└── README.md                           # 项目说明文档
 ```
 
 ---
@@ -254,9 +305,98 @@ strength(t) = importance × exp(-λ × t^β)
 
 ---
 
-## 版本历史
+## 测试
+
+### Flutter 应用
+
+运行单元测试：
+
+```bash
+flutter test
+```
+
+运行代码检查：
+
+```bash
+flutter analyze
+```
+
+测试文件位于：
+
+```text
+test/
+├── core/
+└── data/
+```
+
+### 产品官网
+
+```bash
+cd website
+npm run lint
+npm run check
+```
+
+### 测试规范
+
+- 算法相关逻辑优先补充到 `test/core/`
+- 数据模型相关逻辑优先补充到 `test/data/`
+- 修改 UI 或平台适配时，建议至少运行 `flutter analyze`
+- 修改官网时，建议运行 `npm run lint` 和 `npm run check`
+
+---
+
+## 版本说明
+
+项目使用语义化版本号，例如：
+
+```text
+0.0.1-alpha.2
+```
+
+其中：
+
+- `0.0.1`：版本号
+- `alpha`：预览版本
+- `alpha.2`：第二个 alpha 版本
 
 完整更新日志见 [CHANGELOG.md](./CHANGELOG.md)。
+
+---
+
+## 常见问题 FAQ
+
+### flutter 命令找不到怎么办？
+
+请确认已经安装 Flutter，并且 Flutter SDK 的 `bin` 目录已经加入系统 PATH。
+
+可以运行：
+
+```bash
+flutter doctor
+```
+
+检查环境是否正常。
+
+### flutter pub get 失败怎么办？
+
+请先检查网络环境和 Flutter SDK 版本，然后重新执行：
+
+```bash
+flutter pub get
+```
+
+### Android 无法构建怎么办？
+
+请确认已经安装 Android Studio 和 Android SDK，并执行：
+
+```bash
+flutter doctor --android-licenses
+```
+
+### iOS / macOS 无法构建怎么办？
+
+iOS 和 macOS 构建需要 macOS 系统和 Xcode。
 
 ---
 
@@ -295,8 +435,4 @@ strength(t) = importance × exp(-λ × t^β)
 
 ---
 
-<div align="center">
-
-<b>Made with Flutter · 献给愿意和记忆和解的人</b>
-
-</div>
+**Made with Flutter · 献给愿意和记忆和解的人**
