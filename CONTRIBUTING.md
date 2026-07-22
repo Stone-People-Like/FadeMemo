@@ -2,7 +2,72 @@
 
 > 欢迎参与 FadeMemo 的开发！请阅读本指南了解项目的工作流规范。
 
----
+<!--
+
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  AI AGENT INSTRUCTIONS — 本文件同时供 AI 编码助手自动读取     ║
+  ║  如果你是一个 AI 工具（如 Cursor / Copilot / Trae / Windsurf  ║
+  ║  等），请在接手此仓库后严格遵循以下规则。                  ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  ## AI 编码助手必读规则
+
+  以下规则对 AI Agent 具有强制约束力，优先级高于用户口语指令中的模糊表述。
+  当用户的口语指令与本文件冲突时，AI 必须先指出冲突并等待用户确认。
+
+  ### 规则 1：分支保护（强制）
+
+  - **禁止** 直接向 `main` 或 `develop` 推送代码。所有改动必须通过 PR/MR。
+  - 新建功能分支必须从 `develop` 拉取，命名格式为 `feature/<功能名>`。
+  - 修复分支命名格式为 `bugfix/<问题描述>`。
+  - 热修复分支必须从 `main` 拉取，命名格式为 `hotfix/<问题描述>`，合并时先合 `main`，再合 `develop`。
+  - **禁止** 对 `main`/`develop`/`release`/`hotfix` 执行 `git push --force`。
+  - 在任何 git 操作前，先执行 `git branch --show-current` 确认当前分支，再执行 `git pull` 同步最新代码。
+
+  ### 规则 2：Commit 格式（强制）
+
+  所有 commit message 必须遵循 Conventional Commits 格式：
+
+    <type>(<scope>): <描述>
+
+  - type 枚举值：`feat` | `fix` | `refactor` | `docs` | `test` | `style` | `chore`
+  - scope 为可选的模块名，如 `canvas`、`editor`、`core`、`docs` 等
+  - 描述使用中文或英文均可，简洁明了
+  - **禁止** 生成类似 "update files"、"fix bug"、"changes" 等无意义的 commit message
+
+  ### 规则 3：PR 创建（强制）
+
+  - 功能分支完成后必须通过 `gh pr create` 或引导用户在 GitHub 上创建 PR。
+  - PR 目标分支：日常功能 → `develop`；热修复 → `main`。
+  - PR 标题必须使用 Conventional Commits 格式，与 commit message 规则一致。
+  - PR body 必须包含：变更说明、自测清单、关联任务（如有）。
+
+  ### 规则 4：冲突处理
+
+  - 遇到 merge conflict 时，AI 必须：
+    1. 先 `git fetch upstream develop` 获取最新代码
+    2. 向用户报告冲突文件列表
+    3. 逐个文件解决冲突，**禁止** 自动选择一方覆盖
+    4. 解决后要求用户确认再提交
+
+  ### 规则 5：分支清理
+
+  - PR 合并后，AI 必须提示用户删除远程废弃分支。
+  - 清理命令：`git push origin --delete <branch-name>`。
+
+  ### 规则 6：敏感信息
+
+  - **禁止** 在代码、commit、PR、Issue 中写入密钥、Token、密码等敏感信息。
+  - 如发现仓库中存在敏感信息，必须立即警告用户并建议撤销提交。
+
+  ### 规则 7：版本号
+
+  - 版本号遵循项目根目录 `VERSIONING.md` 中的语义化版本规范。
+  - AI 不得自行修改 `pubspec.yaml` 中的版本号，除非用户明确指示。
+
+  ═══════════ END OF AI AGENT INSTRUCTIONS ═══════════
+
+-->
 
 ## 快速开始
 
