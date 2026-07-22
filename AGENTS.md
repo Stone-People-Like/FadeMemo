@@ -2,7 +2,7 @@
 
 > 本文件为通用 AI Agent 规范（AGENTS.md 标准），规则源来自 CONTRIBUTING.md。
 > 适用于 Zed、Aider、CodeWhale 等支持 AGENTS.md 的工具。
-> 修改规则时请同步更新 CONTRIBUTING.md 中的 HTML 注释块。
+> 修改规则时请同步更新 CONTRIBUTING.md。
 
 ## 项目概述
 

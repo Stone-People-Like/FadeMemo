@@ -1,7 +1,7 @@
 # FadeMemo AI Agent Instructions (GitHub Copilot)
 
 > 本文件为 GitHub Copilot 专用项目指令，规则源来自 CONTRIBUTING.md。
-> 修改规则时请同步更新 CONTRIBUTING.md 中的 HTML 注释块。
+> 修改规则时请同步更新 CONTRIBUTING.md。
 
 ## 项目概述
 
