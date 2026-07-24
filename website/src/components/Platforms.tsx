@@ -56,15 +56,13 @@ export default function Platforms() {
                 transition={{ duration: 0.4, delay: index * 0.05 }}
                 className="h-full"
               >
-                <div
-                  className="group relative flex h-full flex-col items-center justify-start p-6 rounded-2xl bg-[#0F121D]/70 border border-white/5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#C5A880]/30 hover:shadow-[0_10px_25px_-5px_rgba(197,168,128,0.15)]"
-                >
-                  {/* 1. 顶部 Icon 底座 */}
+                <div className="group relative flex h-full flex-col items-center justify-start p-6 rounded-2xl bg-[#0F121D]/70 border border-white/5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#C5A880]/30 hover:shadow-[0_10px_25px_-5px_rgba(197,168,128,0.15)]">
+                  {/* 1. Icon 底座 */}
                   <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 shrink-0 shadow-inner transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(197,168,128,0.2)] group-hover:border-[#C5A880]/30 group-hover:bg-[#C5A880]/10">
                     <Icon className="w-5 h-5 text-[#C5A880]" strokeWidth={1.75} />
                   </div>
 
-                  {/* 2. 中部标题 */}
+                  {/* 2. 平台标题 */}
                   <div className="text-sm font-bold text-white mb-2 shrink-0 text-center group-hover:text-[#E5D2B8] transition-colors">
                     {item.name}
                   </div>
