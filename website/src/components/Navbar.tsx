@@ -1,26 +1,32 @@
 /**
- * Navbar.tsx - Apple / Stripe Commercial Luxury Navbar
- * Features new FadeMemo Champagne Gold Logo with Particles Glow Pulse
+ * Navbar 导航栏组件
+ * 提供固定在页面顶部的导航功能，包含品牌标识、导航链接和下载按钮
+ * 支持滚动时背景变化、移动端响应式菜单展开/收起动画
  */
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, Feather } from "lucide-react";
 import { navLinks } from "../data/content";
 import { scrollToSection } from "../lib/utils";
-import FadeMemoLogo from "./ui/FadeMemoLogo";
 
+/**
+ * Navbar 组件主函数
+ * 使用 useState 管理滚动状态和移动端菜单展开状态
+ * 使用 useEffect 监听滚动事件，实现导航栏背景的动态变化
+ */
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /** 点击导航链接：关闭移动菜单 + 滚动到对应区域 */
   const handleNav = (id: string) => {
     setMobileOpen(false);
     scrollToSection(id);
@@ -30,93 +36,78 @@ export default function Navbar() {
     <motion.header
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? "py-2.5" : "py-5"
+        scrolled ? "glass border-b border-white/5" : "bg-transparent"
       }`}
     >
-      <div className="container max-w-7xl px-4 sm:px-6 lg:px-8">
-        <nav
-          className={`flex h-14 items-center justify-between rounded-full px-5 transition-all duration-300 relative overflow-hidden ${
-            scrolled
-              ? "glass-header border border-[#C5A880]/25 bg-[#090B10]/90 shadow-2xl backdrop-blur-xl"
-              : "bg-[#090B10]/40 backdrop-blur-md border border-white/10"
-          }`}
-        >
-          {/* Top Champagne Gold Glow Line */}
-          {scrolled && (
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#C5A880]/50 to-transparent" />
-          )}
+      <nav className="container flex h-16 items-center justify-between md:h-20">
+        <a href="#" className="flex items-center gap-2.5 group">
+          <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-violet-600 transition-transform group-hover:scale-110">
+            <Feather className="h-5 w-5 text-ink-950" strokeWidth={2.5} />
+          </span>
+          <span className="font-display text-xl font-semibold tracking-tight text-white">
+            FadeMemo
+          </span>
+        </a>
 
-          {/* Brand Logo with Particles Glow Pulse */}
-          <a href="#" className="flex items-center">
-            <FadeMemoLogo />
-          </a>
+        <ul className="hidden items-center gap-8 md:flex">
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <button
+                onClick={() => scrollToSection(link.href.replace("#", ""))}
+                className="text-sm font-medium text-slate-300 transition-colors hover:text-amber-400"
+              >
+                {link.label}
+              </button>
+            </li>
+          ))}
+        </ul>
 
-          {/* Desktop Navigation */}
-          <ul className="hidden items-center gap-1 md:flex rounded-full bg-white/[0.03] p-1 border border-white/5 backdrop-blur-md">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <button
-                  onClick={() => handleNav(link.href.replace("#", ""))}
-                  className="relative rounded-full px-4 py-1.5 text-xs font-medium text-slate-300 transition-all duration-200 hover:bg-white/10 hover:text-[#E5D2B8]"
-                >
-                  {link.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          {/* Right CTA Button */}
-          <div className="hidden md:flex items-center gap-3">
-            <button
-              onClick={() => scrollToSection("download")}
-              className="relative group overflow-hidden rounded-full bg-gradient-to-r from-[#C5A880] via-[#D4AF37] to-[#E5D2B8] px-5 py-2 text-xs font-extrabold text-slate-950 transition-all duration-200 hover:shadow-lg hover:shadow-[#C5A880]/25 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <span className="relative z-10 flex items-center gap-1.5">
-                免费开启记忆重构 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </button>
-          </div>
-
-          {/* Mobile Menu Button */}
+        <div className="hidden md:block">
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white md:hidden"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Toggle Menu"
+            onClick={() => scrollToSection("download")}
+            className="inline-flex items-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink-950 transition-all hover:bg-amber-400 hover:shadow-lg hover:shadow-amber-500/30"
           >
-            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            立即下载
           </button>
-        </nav>
-      </div>
+        </div>
 
-      {/* Mobile Dropdown */}
+        <button
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-white md:hidden"
+          onClick={() => setMobileOpen((v) => !v)}
+          aria-label="切换菜单"
+        >
+          {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </nav>
+
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="mx-4 mt-2 overflow-hidden rounded-2xl border border-white/10 glass-card p-4 md:hidden"
+            transition={{ duration: 0.3 }}
+            className="glass overflow-hidden border-t border-white/5 md:hidden"
           >
-            <ul className="flex flex-col gap-1">
+            <ul className="container flex flex-col gap-1 py-4">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <button
                     onClick={() => handleNav(link.href.replace("#", ""))}
-                    className="block w-full rounded-xl px-4 py-2.5 text-left text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 hover:text-[#E5D2B8]"
+                    className="block w-full rounded-lg px-4 py-3 text-left text-base font-medium text-slate-200 transition-colors hover:bg-white/5 hover:text-amber-400"
                   >
                     {link.label}
                   </button>
                 </li>
               ))}
-              <li className="mt-2 pt-2 border-t border-white/10">
+              <li className="mt-2 px-4">
                 <button
                   onClick={() => handleNav("download")}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#C5A880] to-[#E5D2B8] px-5 py-3 text-sm font-extrabold text-slate-950 active:scale-[0.98]"
+                  className="block w-full rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-ink-950"
                 >
-                  免费开启记忆重构 <ArrowRight className="h-4 w-4" />
+                  立即下载
                 </button>
               </li>
             </ul>

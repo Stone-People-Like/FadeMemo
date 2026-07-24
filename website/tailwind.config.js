@@ -14,47 +14,22 @@ export default {
     },
     extend: {
       colors: {
-        midnight: "#08090A",
         ink: {
-          950: "#090B10",
-          900: "#0D0F14",
-          850: "#111420",
-          800: "#181C28",
-          700: "#242A3C",
-          600: "#363E56",
-        },
-        gold: {
-          50: "#FAF7F2",
-          100: "#F5EFE4",
-          200: "#E5D2B8",
-          300: "#D4AF37",
-          400: "#C5A880",
-          500: "#B39268",
-          600: "#8C6D46",
-          700: "#684E2E",
-        },
-        aurora: {
-          950: "#0E0B1A",
-          900: "#140F28",
-          800: "#1F173D",
-          500: "#7C3AED",
-          400: "#A78BFA",
+          950: "#080b14",
+          900: "#0f172a",
+          800: "#1a2333",
+          700: "#283548",
+          600: "#3b4a63",
         },
         amber: {
           50: "#fffbeb",
           100: "#fef3c7",
           200: "#fde68a",
-          300: "#E5D2B8",
-          400: "#C5A880",
-          500: "#B39268",
-          600: "#8C6D46",
-          700: "#684E2E",
-        },
-        cyan: {
-          300: "#67E8F9",
-          400: "#22D3EE",
-          500: "#00F2FE",
-          600: "#0891B2",
+          300: "#fcd34d",
+          400: "#fbbf24",
+          500: "#f59e0b",
+          600: "#d97706",
+          700: "#b45309",
         },
         violet: {
           400: "#a78bfa",
@@ -63,47 +38,34 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Inter"', '"SF Pro Display"', "-apple-system", "system-ui", "sans-serif"],
-        sans: ['"Inter"', '"SF Pro Text"', "system-ui", "sans-serif"],
-        mono: ['"JetBrains Mono"', '"Fira Code"', "monospace"],
+        display: ['"Fraunces"', "Georgia", "serif"],
+        sans: ['"Manrope"', "system-ui", "sans-serif"],
       },
       animation: {
         "float-slow": "float 8s ease-in-out infinite",
         "float-slower": "float 12s ease-in-out infinite",
         "gradient-shift": "gradientShift 15s ease infinite",
         "pulse-glow": "pulseGlow 4s ease-in-out infinite",
-        "shimmer": "shimmer 2.5s linear infinite",
-        "border-beam": "borderBeam 6s linear infinite",
       },
       keyframes: {
         float: {
           "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-14px)" },
+          "50%": { transform: "translateY(-20px)" },
         },
         gradientShift: {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
         },
         pulseGlow: {
-          "0%, 100%": { opacity: "0.3", transform: "scale(1)" },
-          "50%": { opacity: "0.7", transform: "scale(1.05)" },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        borderBeam: {
-          "100%": { offsetDistance: "100%" },
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "0.8" },
         },
       },
       backgroundImage: {
         "grid-pattern":
-          "linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)",
-        "dots-pattern":
-          "radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px)",
+          "linear-gradient(to right, rgba(148,163,184,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,163,184,0.05) 1px, transparent 1px)",
       },
     },
   },
   plugins: [],
 };
-

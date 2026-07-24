@@ -138,20 +138,20 @@ export default function DownloadPage() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-12 text-center"
         >
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border border-[#C5A880]/30 bg-[#C5A880]/10 text-[#E5D2B8] shadow-lg shadow-[#C5A880]/15">
-            <Icon className="h-10 w-10 text-[#C5A880]" />
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-ink-900 text-amber-400">
+            <Icon className="h-10 w-10" />
           </div>
-          <h1 className="mt-6 font-display text-4xl font-black text-white md:text-5xl [text-wrap:balance]">
+          <h1 className="mt-6 font-display text-4xl font-semibold text-white md:text-5xl">
             {data.name} 版
           </h1>
-          <p className="mt-4 mx-auto max-w-lg text-lg text-slate-300 [text-wrap:pretty]">
+          <p className="mt-4 mx-auto max-w-lg text-lg text-slate-400 text-balance">
             {data.desc}
           </p>
-          <div className="mt-4 inline-flex items-center gap-3 text-sm text-slate-400">
-            <span className="rounded-full border border-[#C5A880]/30 bg-[#C5A880]/10 px-3.5 py-1 text-[#E5D2B8] font-mono font-bold">
+          <div className="mt-4 inline-flex items-center gap-3 text-sm text-slate-500">
+            <span className="rounded-full border border-white/10 px-3 py-1">
               {data.version}
             </span>
-            <span className="font-mono">{data.size}</span>
+            <span>{data.size}</span>
           </div>
         </motion.div>
 
@@ -165,7 +165,7 @@ export default function DownloadPage() {
           {data.available ? (
             <a
               href={data.href}
-              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#C5A880] via-[#D4AF37] to-[#E5D2B8] px-8 py-4 text-lg font-extrabold text-slate-950 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-[#C5A880]/30 active:scale-[0.98]"
+              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-amber-500 px-8 py-4 text-lg font-semibold text-ink-950 transition-all hover:bg-amber-400 hover:shadow-xl hover:shadow-amber-500/40"
             >
               <Download className="h-5 w-5" />
               {data.sub || "下载安装包"}
@@ -186,17 +186,17 @@ export default function DownloadPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mx-auto mt-16 max-w-xl rounded-2xl border border-[#C5A880]/20 bg-[#C5A880]/5 p-6 text-center backdrop-blur-md"
+          className="mx-auto mt-16 max-w-xl rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6 text-center"
         >
-          <p className="text-sm text-slate-300 [text-wrap:pretty]">
-            FadeMemo 完全免费，开源透明。关注
+          <p className="text-sm text-slate-300">
+            FadeMemo 完全免费，即将开源。关注
             <a
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="mx-1 text-[#E5D2B8] underline underline-offset-2 hover:text-white font-bold"
+              className="mx-1 text-amber-400 underline underline-offset-2 hover:text-amber-300"
             >
-              GitHub 官方仓库
+              GitHub 仓库
             </a>
             获取最新动态。
           </p>
