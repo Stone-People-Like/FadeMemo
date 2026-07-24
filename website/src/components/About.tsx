@@ -1,267 +1,791 @@
 /**
- * About 产品介绍组件
- * 展示《记·忘》产品概念报告全文，包含核心理念、损坏引擎、
- * 五种记忆挑战模式、技术构成、路线图等内容
+ * About.tsx - Apple / Stripe Style Ebbinghaus Decay Engine & Interactive Cyber Dashboard
+ * 包含：科技仪表盘底板、L型角落角标、进场1.5s SVG路径绘制、沿线流光粒子、波谷反弹脉冲波纹、悬浮玻璃 Badge、Hover 垂直辅助线与留存率对比
  */
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import {
+  Brain,
+  TrendingUp,
+  ShieldAlert,
+  Zap,
+  ShieldCheck,
+  Sparkles,
+  Activity,
+  ArrowRight,
+  RefreshCw,
+  Eye,
+} from "lucide-react";
+
+interface AxisNode {
+  id: string;
+  x: number; // SVG X 坐标 (out of 800)
+  label: string;
+  timeText: string;
+  passiveRetention: number;
+  fadememoRetention: number;
+  reversalBoost: string;
+  detailHint: string;
+}
+
+const AXIS_NODES: AxisNode[] = [
+  {
+    id: "node-0",
+    x: 60,
+    label: "学习瞬间",
+    timeText: "0 Hours (Day 0)",
+    passiveRetention: 100,
+    fadememoRetention: 100,
+    reversalBoost: "100% 原始信号",
+    detailHint: "初始神经元兴奋峰值，知识完全清晰完好。",
+  },
+  {
+    id: "node-1",
+    x: 230,
+    label: "24小时临界点",
+    timeText: "24 Hours (Day 1)",
+    passiveRetention: 33,
+    fadememoRetention: 92,
+    reversalBoost: "+200% 提取固化",
+    detailHint: "被动阅读遗忘过半；FadeMemo 智能隐去关键术语，触发主动提取。",
+  },
+  {
+    id: "node-2",
+    x: 470,
+    label: "72小时临界点",
+    timeText: "72 Hours (Day 3)",
+    passiveRetention: 18,
+    fadememoRetention: 98,
+    reversalBoost: "终身化存留",
+    detailHint: "被动阅读深度侵蚀；FadeMemo 注入伪事实攻防，锁定终身记忆。",
+  },
+  {
+    id: "node-3",
+    x: 740,
+    label: "7天终身回路",
+    timeText: "168 Hours (Day 7)",
+    passiveRetention: 5,
+    fadememoRetention: 99,
+    reversalBoost: "99% 终身存留",
+    detailHint: "168小时（Day 7）：神经突触长时程增强（LTP）完成，知识彻底固化入长久记忆库。",
+  },
+];
+
+interface LevelItem {
+  level: string;
+  name: string;
+  desc: string;
+  colorHex: string;
+  pulseSpeed: number; // 0 for steady solid light, >0 for pulse duration (seconds)
+  badgeBg: string;
+  badgeText: string;
+}
+
+const LEVELS: LevelItem[] = [
+  {
+    level: "0",
+    name: "完好无损",
+    desc: "内容完全清晰，知识点处于初始峰值状态 (100% 留存率)",
+    colorHex: "#10B981", // 完好绿光
+    pulseSpeed: 0, // 安稳常亮
+    badgeBg: "bg-emerald-500/15 border-emerald-500/30",
+    badgeText: "text-emerald-300",
+  },
+  {
+    level: "1",
+    name: "微弱偏移",
+    desc: "关键数字或符号产生极小偏差 (95% 留存率)",
+    colorHex: "#14B8A6",
+    pulseSpeed: 3.2,
+    badgeBg: "bg-teal-500/15 border-teal-500/30",
+    badgeText: "text-teal-300",
+  },
+  {
+    level: "2",
+    name: "轻度磨损",
+    desc: "个别细节偏离，遗忘曲线开始下滑 (88% 留存率)",
+    colorHex: "#06B6D4",
+    pulseSpeed: 2.7,
+    badgeBg: "bg-cyan-500/15 border-cyan-500/30",
+    badgeText: "text-cyan-300",
+  },
+  {
+    level: "3",
+    name: "关键挖空",
+    desc: "核心术语被智能隐藏，触发主动回忆提醒",
+    colorHex: "#3B82F6",
+    pulseSpeed: 2.2,
+    badgeBg: "bg-blue-500/15 border-blue-500/30",
+    badgeText: "text-blue-300",
+  },
+  {
+    level: "4",
+    name: "伪事实注入",
+    desc: "逻辑漏洞与替代错字注入，考验大脑判断力",
+    colorHex: "#E5D2B8",
+    pulseSpeed: 1.8,
+    badgeBg: "bg-[#C5A880]/15 border-[#C5A880]/30",
+    badgeText: "text-[#E5D2B8]",
+  },
+  {
+    level: "5",
+    name: "显著侵蚀",
+    desc: "核心信息大面积隐去，仅保留骨架 (警告琥珀金)",
+    colorHex: "#F59E0B", // 警告琥珀金
+    pulseSpeed: 1.4, // 中速呼吸
+    badgeBg: "bg-amber-500/15 border-amber-500/30",
+    badgeText: "text-amber-300",
+  },
+  {
+    level: "6",
+    name: "重度重组",
+    desc: "时序与因果关联被打乱，需重新编排重建",
+    colorHex: "#F97316",
+    pulseSpeed: 1.1,
+    badgeBg: "bg-orange-500/15 border-orange-500/30",
+    badgeText: "text-orange-300",
+  },
+  {
+    level: "7",
+    name: "严重衰减",
+    desc: "仅保留标题与核心提纲缩写，依赖神经反推",
+    colorHex: "#FF4500",
+    pulseSpeed: 0.9,
+    badgeBg: "bg-rose-500/15 border-rose-500/30",
+    badgeText: "text-rose-300",
+  },
+  {
+    level: "8",
+    name: "临界状态",
+    desc: "记忆信号急剧衰退，濒临完全解构边缘",
+    colorHex: "#E11D48",
+    pulseSpeed: 0.7,
+    badgeBg: "bg-rose-600/15 border-rose-600/30",
+    badgeText: "text-rose-300",
+  },
+  {
+    level: "9",
+    name: "高度模糊",
+    desc: "仅存元数据标签，急需强力巩固复原",
+    colorHex: "#D946EF",
+    pulseSpeed: 0.55,
+    badgeBg: "bg-fuchsia-500/15 border-fuchsia-500/30",
+    badgeText: "text-fuchsia-300",
+  },
+  {
+    level: "10",
+    name: "彻底重构",
+    desc: "完全重置，需启动新一轮认知系统搭建 (警示紫红)",
+    colorHex: "#A855F7", // 警示紫红
+    pulseSpeed: 0.4, // 高频脉冲呼吸灯
+    badgeBg: "bg-purple-600/20 border-purple-500/40",
+    badgeText: "text-purple-300",
+  },
+];
+
+function LevelCard({ lvl }: { lvl: LevelItem }) {
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setMousePos(null);
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" },
+    },
+  };
+
+  return (
+    <motion.div
+      variants={cardVariants}
+      whileHover={{ y: -4, transition: { duration: 0.2, ease: "easeOut" } }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative rounded-2xl border border-white/10 bg-[#090B10]/80 p-4 sm:p-5 backdrop-blur-xl transition-shadow duration-300 overflow-hidden group shadow-lg flex flex-col justify-between"
+      style={{
+        boxShadow: mousePos ? `0 12px 30px -10px ${lvl.colorHex}35` : undefined,
+      }}
+    >
+      {/* 2px 高亮能量指示线 (Status Light Bar) */}
+      <motion.div
+        className="absolute left-0 top-0 bottom-0 w-[2px] rounded-l-2xl pointer-events-none"
+        style={{
+          backgroundColor: lvl.colorHex,
+          boxShadow: `0 0 10px ${lvl.colorHex}`,
+        }}
+        animate={
+          lvl.pulseSpeed > 0
+            ? { opacity: [0.4, 1, 0.4] }
+            : { opacity: 1 }
+        }
+        transition={
+          lvl.pulseSpeed > 0
+            ? { duration: lvl.pulseSpeed, repeat: Infinity, ease: "easeInOut" }
+            : {}
+        }
+      />
+
+      {/* 鼠标 Hover 径向高斯模糊质感背景 (Radial Hover Glow) */}
+      {mousePos && (
+        <div
+          className="pointer-events-none absolute inset-0 transition-opacity duration-300"
+          style={{
+            background: `radial-gradient(320px circle at ${mousePos.x}px ${mousePos.y}px, ${lvl.colorHex}18, transparent 75%)`,
+          }}
+        />
+      )}
+
+      {/* 鼠标 Hover 径向微光 Border (Radial Hover Glow Border) */}
+      {mousePos && (
+        <div
+          className="pointer-events-none absolute inset-0 rounded-2xl p-[1px]"
+          style={{
+            background: `radial-gradient(200px circle at ${mousePos.x}px ${mousePos.y}px, ${lvl.colorHex}90, transparent 70%)`,
+            WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+            WebkitMaskComposite: "xor",
+            maskComposite: "exclude",
+          }}
+        />
+      )}
+
+      {/* 卡片头部: Level 编号 + 名称 + 动态呼吸灯 Indicator */}
+      <div className="flex items-center justify-between font-mono relative z-10">
+        <div className="flex items-center gap-2.5">
+          {/* 动态呼吸灯 (Breathing Status Pulse Dot) */}
+          <div className="relative flex h-2.5 w-2.5 items-center justify-center">
+            <motion.span
+              className="absolute inline-flex h-full w-full rounded-full pointer-events-none"
+              style={{ backgroundColor: lvl.colorHex }}
+              animate={
+                lvl.pulseSpeed > 0
+                  ? { scale: [1, 2.2, 1], opacity: [0.8, 0, 0.8] }
+                  : { opacity: 0.9 }
+              }
+              transition={
+                lvl.pulseSpeed > 0
+                  ? { duration: lvl.pulseSpeed, repeat: Infinity, ease: "easeInOut" }
+                  : {}
+              }
+            />
+            <span
+              className="relative inline-flex h-2 w-2 rounded-full pointer-events-none"
+              style={{
+                backgroundColor: lvl.colorHex,
+                boxShadow: `0 0 8px ${lvl.colorHex}`,
+              }}
+            />
+          </div>
+
+          <span
+            className="font-black text-xs tracking-wider"
+            style={{ color: lvl.colorHex }}
+          >
+            LEVEL {lvl.level}
+          </span>
+        </div>
+
+        <span
+          className={`font-bold text-xs px-2.5 py-0.5 rounded-md border backdrop-blur-md ${lvl.badgeBg} ${lvl.badgeText}`}
+        >
+          {lvl.name}
+        </span>
+      </div>
+
+      {/* 卡片描述 */}
+      <p className="mt-3 text-xs text-slate-300 leading-relaxed font-sans relative z-10">
+        {lvl.desc}
+      </p>
+    </motion.div>
+  );
+}
 
 export default function About() {
-  return (
-    <section id="about" className="relative py-28 md:py-36">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-amber-600/5 to-transparent" />
+  const [hoveredNodeIndex, setHoveredNodeIndex] = useState<number | null>(1); // 默认高亮 24h 节点
+  const [activeTabNode, setActiveTabNode] = useState<number>(1);
 
-      <div className="container relative max-w-3xl">
+  const selectedNode = hoveredNodeIndex !== null ? AXIS_NODES[hoveredNodeIndex] : AXIS_NODES[activeTabNode];
+
+  // SVG Reversal Path String (800 x 300 viewBox)
+  const reversalPath = "M 60 50 C 110 130, 180 195, 230 200 C 245 200, 255 80, 270 65 C 340 85, 410 115, 470 125 C 485 125, 495 70, 510 55 C 590 57, 670 59, 740 60";
+  // Red Passive Decay Path String
+  const passivePath = "M 60 50 C 130 180, 190 200, 230 200 C 310 200, 390 230, 470 235 C 570 240, 670 255, 740 260";
+
+  return (
+    <section id="about" className="relative py-24 md:py-32 bg-[#090B10] overflow-hidden">
+      {/* 极夜柔暗光辉背景 */}
+      <div className="pointer-events-none absolute left-1/3 top-1/4 h-[550px] w-[550px] rounded-full bg-[#111420] blur-[170px]" />
+      <div className="pointer-events-none absolute right-1/4 bottom-1/4 h-[450px] w-[450px] rounded-full bg-[#C5A880]/10 blur-[160px]" />
+
+      <div className="container max-w-6xl px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* 区域 Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center space-y-4"
         >
-          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-400">
-            产品介绍
-          </span>
-          <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-white text-balance md:text-5xl">
-            记 · 忘
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#C5A880]/30 bg-[#C5A880]/10 px-4 py-1.5 text-xs font-bold tracking-wider text-[#E5D2B8] backdrop-blur-md">
+            <Brain className="h-4 w-4 text-[#C5A880]" />
+            <span>EBBINGHAUS DECAY ENGINE</span>
+          </div>
+
+          <h2 className="font-display text-3xl font-black text-white sm:text-5xl tracking-tight leading-tight [text-wrap:balance]">
+            大脑衰减算法与动态逆转引擎
           </h2>
-          <p className="mt-4 text-lg text-slate-400">
-            一份越不回顾就越模糊的笔记
-          </p>
-          <p className="mt-2 text-sm text-slate-500">
-            产品概念报告 · v0.1 · 概念验证阶段 · 2026年07月21日
+          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed [text-wrap:pretty]">
+            知识不是静态文档，而是随时间衰减的生物电信号。 FadeMemo 实时模拟记忆遗忘曲线，在最恰当的临界点触发修复提醒，以最小的时间成本换取最高的留存效率。
           </p>
         </motion.div>
 
+        {/* 艾宾浩斯科技仪表盘图表 */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-16 space-y-16 text-slate-300"
+          className="mt-14"
         >
-          {/* 一句话说清楚 */}
-          <Section title="一、一句话说清楚这个项目">
-            <p>这是一个笔记工具——但不是普通的笔记工具。</p>
-            <p>你记下来的内容会随着时间慢慢"坏掉"：字会消失、数字会变错、句子会变得模糊不清。</p>
-            <p>想要让它们恢复原状？唯一的方法就是——你自己回忆起来，填上去。</p>
-            <p>它不追求帮你"存住"信息，而是逼你"记住"信息。</p>
-            <Highlight>这不是一个笔记工具，这是一个披着笔记外衣的学习工具。</Highlight>
-          </Section>
+          <div className="rounded-3xl bg-[#06080C]/90 p-6 md:p-10 border border-white/10 relative overflow-hidden shadow-2xl backdrop-blur-xl group">
+            
+            {/* 四个角落 L 型坐标定位角标 (Cyber Corner Brackets) */}
+            <div className="pointer-events-none absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-[#C5A880]/60" />
+            <div className="pointer-events-none absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-[#C5A880]/60" />
+            <div className="pointer-events-none absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-[#C5A880]/60" />
+            <div className="pointer-events-none absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-[#C5A880]/60" />
 
-          {/* 为什么需要 */}
-          <Section title="二、为什么需要这样一个工具">
-            <SubTitle>现状的问题</SubTitle>
-            <ul className="list-disc space-y-2 pl-5">
-              <li>大部分人记笔记＝把信息从别处复制粘贴到一个地方</li>
-              <li>记完就再也不看——"存了就等于会了"是大脑最大的骗局</li>
-              <li>现有的学习工具（背单词 App、题库）和"你自己记的笔记"是分裂的</li>
-              <li>考试前翻笔记，发现跟看陌生人写的一样——因为从没主动回忆过</li>
-            </ul>
-            <SubTitle>这个工具想做的事</SubTitle>
-            <ul className="list-disc space-y-2 pl-5">
-              <li>把你的笔记变成一个"活的东西"——不看它就会生锈</li>
-              <li>每次修复都是一次主动回忆，这是公认最高效的学习方式</li>
-              <li>让"记"和"学"合二为一，不再分裂</li>
-            </ul>
-          </Section>
-
-          {/* 核心理念 */}
-          <Section title="三、核心理念：存储和记忆本来就是矛盾的">
-            <p>传统笔记工具的底层逻辑是：只要存得够完整、够精确，就永远不需要去记它。</p>
-            <p>但你想想看：</p>
-            <ul className="list-disc space-y-2 pl-5">
-              <li>你记了密码管理器里所有密码——但你一个也背不出来</li>
-              <li>你存了整本教材的笔记——但考试时什么都想不起来</li>
-              <li>你保存了某次对话的完整聊天记录——但需要时还是得去搜</li>
-            </ul>
-            <p>存储越完美，大脑越不需要参与。大脑越不参与，记忆越脆弱。</p>
-            <p>这个工具反过来：笔记越完整，你越不需要去记它；笔记越残缺，你越需要去回忆它。前者让你省心但忘记，后者让你费力但记住。</p>
-            <Highlight>工具的目标不是"帮你记住一切"，而是"让你真正记得住你在乎的东西"。</Highlight>
-          </Section>
-
-          {/* 损坏引擎 */}
-          <Section title="四、损坏引擎：让笔记和脑子同步遗忘">
-            <SubTitle>4.1 艾宾浩斯遗忘曲线</SubTitle>
-            <p>每个人都知道"刚学的东西忘得最快，经常回顾就忘得慢"。这是艾宾浩斯一个多世纪前发现的规律，有牢靠的科学研究支撑。</p>
-            <p>我们的损坏引擎直接套用这个公式：</p>
-            <CodeBlock>记忆保留率 = e^( - 距离上次回顾的时间 / 笔记的"记忆强度" )</CodeBlock>
-            <ul className="list-disc space-y-2 pl-5">
-              <li>一条新笔记，昨天还记得清清楚楚，今天不看就模糊了一小块</li>
-              <li>一条经常回顾的老笔记，一星期不看也只掉了一点点</li>
-              <li>答错一次，笔记的记忆强度减半——你会发现它损坏得越来越快</li>
-            </ul>
-
-            <SubTitle>4.2 损坏等级：从完整到遗忘（0-10级）</SubTitle>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {[
-                ["0", "完好无损", "内容完全正常，和刚写的时候一样"],
-                ["1", "轻微磨损", "有一两个数字偏了一点点"],
-                ["2", "轻度损坏", "关键数字偏了3-5，或有错别字"],
-                ["3", "明显受损", "核心概念被替换成近似的"],
-                ["4", "比较严重", "时间、地点、人名同时出错"],
-                ["5", "显著损坏", "核心信息全错，只剩几个词"],
-                ["6", "重度损坏", "只剩不到一半内容原样"],
-                ["7", "非常严重", "只剩半句话和标题提示"],
-                ["8", "临界状态", "只剩标题和标签"],
-                ["9", "濒危", '只显示\u201C这是一条关于XXX的笔记\u201D'],
-                ["10", "彻底遗忘", "你已经忘了这条笔记的内容"],
-              ].map(([lvl, label, desc]) => (
-                <div key={lvl} className="rounded-lg border border-white/5 bg-ink-900/40 p-3">
-                  <span className="font-display text-lg font-semibold text-amber-400">{lvl}</span>
-                  <span className="ml-2 text-sm font-medium text-white">{label}</span>
-                  <p className="mt-1 text-xs text-slate-400">{desc}</p>
+            {/* 图表顶部控制栏：左上公式 + 右上图例 */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+              
+              {/* 左上角公式 rendering 与 [ 动态实时模拟中 ] 绿灯 Status 标签 */}
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-3">
+                  <h3 className="font-display text-xl md:text-2xl font-black text-white flex items-center gap-2.5">
+                    <TrendingUp className="h-5 w-5 text-[#C5A880]" />
+                    记忆衰减与动态逆转模拟
+                  </h3>
+                  
+                  {/* Status 标签: 动态实时模拟中 */}
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-mono font-bold text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span>[ 动态实时模拟中 ]</span>
+                  </span>
                 </div>
-              ))}
+
+                {/* 修复公式基线对齐：行容器 flex items-center gap-3 text-xs text-slate-400 font-mono mt-2 */}
+                <div className="flex items-center gap-3 text-xs text-slate-400 font-mono mt-2">
+                  <span className="shrink-0">RETENTION FORMULA:</span>
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-amber-200/90 leading-none font-bold">
+                    <span>R = e</span>
+                    <sup className="text-[10px] text-amber-200/80 leading-none ml-0.5 relative -top-[1px]">
+                      -t/S
+                    </sup>
+                  </span>
+                  <span className="hidden sm:inline text-slate-400 shrink-0">| S = 神经巩固因子</span>
+                </div>
+              </div>
+
+              {/* 右上角图例组件 */}
+              <div className="flex flex-wrap items-center gap-3 text-xs font-bold font-mono">
+                {/* 被动阅读（指数断崖）- 红色呼吸灯 */}
+                <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 px-3.5 py-1.5 rounded-full border border-rose-500/30 backdrop-blur-md shadow-sm">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+                  </span>
+                  <span>被动阅读（指数断崖）</span>
+                </div>
+
+                {/* FadeMemo 答题逆转（阶梯固化）- 香槟金/青蓝呼吸灯 */}
+                <div className="flex items-center gap-2 text-[#E5D2B8] bg-[#C5A880]/15 px-3.5 py-1.5 rounded-full border border-[#C5A880]/40 backdrop-blur-md shadow-[0_0_15px_rgba(197,168,128,0.2)]">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C5A880] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#C5A880]"></span>
+                  </span>
+                  <span className="bg-gradient-to-r from-[#F5EFE4] via-[#E5D2B8] to-[#06B6D4] bg-clip-text text-transparent">
+                    FadeMemo 答题逆转（阶梯固化）
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <SubTitle>4.3 等级怎么升降</SubTitle>
-            <p><span className="font-semibold text-green-400">答对时：</span>第一次答对降2级，第二次答对降1级</p>
-            <p><span className="font-semibold text-red-400">答错时：</span>第一次答错升1级，连续三次答错升3级——强制展示原文</p>
-            <p><span className="font-semibold text-slate-400">自然遗忘：</span>超过24h升1级，48h再升2级，72h再升3级，之后按艾宾浩斯曲线节奏</p>
-            <Highlight>答对的奖励（降2级）大于答错的惩罚（升1级）。只要经常回顾，笔记就能维持健康状态。</Highlight>
-          </Section>
+            {/* SVG 科技仪表盘画板 (Cyber Grid Canvas) */}
+            <div className="mt-8 relative h-72 md:h-80 w-full select-none">
+              <svg
+                className="w-full h-full overflow-visible cursor-crosshair"
+                viewBox="0 0 800 300"
+                onMouseLeave={() => setHoveredNodeIndex(null)}
+              >
+                <defs>
+                  {/* 香槟金/青蓝/翡翠绿 渐变 */}
+                  <linearGradient id="luxury-reversal-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#C5A880" />
+                    <stop offset="35%" stopColor="#E5D2B8" />
+                    <stop offset="70%" stopColor="#06B6D4" />
+                    <stop offset="100%" stopColor="#10B981" />
+                  </linearGradient>
 
-          {/* 五种挑战模式 */}
-          <Section title="五、五种记忆挑战模式">
-            <div className="space-y-6">
-              {[
-                { title: "模式一：错误检测", desc: "故意把原文中的事实改成错的，你来判断对错。错误改法'似是而非'——数字外形相近、同世纪、同类别，让你真正需要动脑辨别。" },
-                { title: "模式二：信息填空", desc: "挖掉关键信息，你来填。优先挖掉时间、地点、人名、数字、关键概念。连续填错3次则暂时展示原始内容。" },
-                { title: "模式三：对比判断", desc: "同时展示两段内容，一段真一段假，你来选出真的。两个信息都'看起来挺对'——但其中一个细节是错的，训练精细辨别能力。" },
-                { title: "模式四：时序重组", desc: "如果笔记包含多个按时间发生的事件，打乱顺序，你来重新排列。测试的是因果理解，而非孤立记忆。" },
-                { title: "模式五：缩写还原", desc: "给你一个缩略版本（骨架），你把它展开成完整表述。帮你把被动记忆变成主动输出。" },
-              ].map((mode) => (
-                <div key={mode.title} className="rounded-xl border border-white/10 bg-ink-900/40 p-5">
-                  <h4 className="font-display text-lg font-semibold text-white">{mode.title}</h4>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-400">{mode.desc}</p>
+                  {/* 红色断崖衰减渐变 */}
+                  <linearGradient id="red-decay-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#F43F5E" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="#BE123C" stopOpacity="0.3" />
+                  </linearGradient>
+
+                  {/* 粒子高亮滤镜 */}
+                  <filter id="tracer-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                    <feMerge>
+                      <feMergeNode in="coloredBlur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+
+                  {/* 节点波纹滤镜 */}
+                  <filter id="ripple-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                {/* 科技网格线背景 (Cyber Grid Lines: border-white/5 交叉网格) */}
+                <g stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="3 3">
+                  <line x1="60" y1="50" x2="740" y2="50" />
+                  <line x1="60" y1="112" x2="740" y2="112" />
+                  <line x1="60" y1="175" x2="740" y2="175" />
+                  <line x1="60" y1="237" x2="740" y2="237" />
+
+                  <line x1="60" y1="30" x2="60" y2="265" />
+                  <line x1="230" y1="30" x2="230" y2="265" />
+                  <line x1="470" y1="30" x2="470" y2="265" />
+                  <line x1="740" y1="30" x2="740" y2="265" />
+                </g>
+
+                {/* Y 轴刻度文字 (留存率 %) */}
+                <g fill="rgba(255,255,255,0.3)" fontSize="10" fontFamily="monospace" textAnchor="end">
+                  <text x="50" y="54">100%</text>
+                  <text x="50" y="116">75%</text>
+                  <text x="50" y="179">50%</text>
+                  <text x="50" y="241">25%</text>
+                </g>
+
+                {/* 被动阅读（指数断崖）- 红色虚线 */}
+                <path
+                  d={passivePath}
+                  fill="none"
+                  stroke="url(#red-decay-gradient)"
+                  strokeWidth="2.5"
+                  strokeDasharray="6 6"
+                />
+
+                {/* 进场 SVG 绘制动画 (1.5s Path Draw Animation) - FadeMemo 逆转曲线 */}
+                <motion.path
+                  d={reversalPath}
+                  fill="none"
+                  stroke="url(#luxury-reversal-gradient)"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  whileInView={{ pathLength: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, ease: "easeInOut" }}
+                />
+
+                {/* 沿线数据流光 (Glowing Light Tracer Particle) */}
+                <g filter="url(#tracer-glow)">
+                  {/* 外围晕光粒子 */}
+                  <circle r="7" fill="#06B6D4" opacity="0.6">
+                    <animateMotion path={reversalPath} dur="6.5s" repeatCount="indefinite" />
+                  </circle>
+                  {/* 核心高亮光斑 */}
+                  <circle r="3.5" fill="#F5EFE4">
+                    <animateMotion path={reversalPath} dur="6.5s" repeatCount="indefinite" />
+                  </circle>
+                </g>
+
+                {/* 反弹节点脉冲 (Bounce Pulse at Valleys - 临界波谷反弹) */}
+                {/* 波谷 1: (230, 200) */}
+                <g transform="translate(230, 200)" filter="url(#ripple-glow)">
+                  <circle r="12" fill="none" stroke="#C5A880" strokeWidth="1.5">
+                    <animate attributeName="r" values="4; 28; 4" dur="2.4s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.9; 0; 0.9" dur="2.4s" repeatCount="indefinite" />
+                  </circle>
+                  <circle r="4" fill="#C5A880" />
+                </g>
+
+                {/* 波谷 2: (470, 125) */}
+                <g transform="translate(470, 125)" filter="url(#ripple-glow)">
+                  <circle r="12" fill="none" stroke="#06B6D4" strokeWidth="1.5">
+                    <animate attributeName="r" values="4; 28; 4" dur="2.4s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.9; 0; 0.9" dur="2.4s" repeatCount="indefinite" />
+                  </circle>
+                  <circle r="4" fill="#06B6D4" />
+                </g>
+
+                {/* 4 大核心时间轴节点刻度圈 */}
+                {AXIS_NODES.map((node, idx) => {
+                  const isSelected = selectedNode.id === node.id;
+                  return (
+                    <g
+                      key={node.id}
+                      className="cursor-pointer group"
+                      onMouseEnter={() => setHoveredNodeIndex(idx)}
+                      onClick={() => setActiveTabNode(idx)}
+                    >
+                      {/* 节点高亮辅助光环 */}
+                      {isSelected && (
+                        <circle
+                          cx={node.x}
+                          cy={node.x === 60 ? 50 : node.x === 230 ? 200 : node.x === 470 ? 125 : 60}
+                          r="14"
+                          fill="rgba(197,168,128,0.15)"
+                          stroke="#E5D2B8"
+                          strokeWidth="1.5"
+                          className="animate-pulse"
+                        />
+                      )}
+                      <circle
+                        cx={node.x}
+                        cy={node.x === 60 ? 50 : node.x === 230 ? 200 : node.x === 470 ? 125 : 60}
+                        r="5"
+                        fill={isSelected ? "#F5EFE4" : "#C5A880"}
+                        stroke="#090B10"
+                        strokeWidth="2"
+                      />
+                    </g>
+                  );
+                })}
+
+                {/* Hover 垂直高亮辅助虚线 (Inspection Line) */}
+                {selectedNode && (
+                  <g className="transition-all duration-300">
+                    <line
+                      x1={selectedNode.x}
+                      y1="30"
+                      x2={selectedNode.x}
+                      y2="265"
+                      stroke="#E5D2B8"
+                      strokeWidth="1.5"
+                      strokeDasharray="4 4"
+                      opacity="0.8"
+                    />
+                    {/* 辅助线上高亮激光头 */}
+                    <circle
+                      cx={selectedNode.x}
+                      cy={selectedNode.x === 60 ? 50 : selectedNode.x === 230 ? 200 : selectedNode.x === 470 ? 125 : 60}
+                      r="6"
+                      fill="#06B6D4"
+                      stroke="#FFFFFF"
+                      strokeWidth="2"
+                      className="shadow-[0_0_12px_#06B6D4]"
+                    />
+                  </g>
+                )}
+              </svg>
+
+              {/* 悬浮玻璃 Badge 1: 第1次主动提取巩固 (+200%) - 位置在峰值 1 (X: 270, Y: 65) */}
+              <div
+                className="absolute left-[31%] top-[8%] -translate-x-1/2 pointer-events-none hidden sm:flex items-center gap-2 rounded-xl backdrop-blur-md bg-[#090B10]/85 px-3 py-1.5 border border-[#C5A880]/50 shadow-[0_0_20px_rgba(197,168,128,0.25)]"
+              >
+                <div className="h-6 w-6 rounded-lg bg-[#C5A880]/20 flex items-center justify-center border border-[#C5A880]/40">
+                  <Zap className="h-3.5 w-3.5 text-[#E5D2B8]" />
                 </div>
-              ))}
-            </div>
-          </Section>
-
-          {/* 技术构成 */}
-          <Section title="六、技术构成（人话版）">
-            <p>这个工具不依赖网络——完全在你的电脑上运行。不需要服务器、不需要注册账号、不需要联网。</p>
-            <div className="mt-4 grid gap-4 sm:grid-cols-3">
-              {[
-                { title: "界面", tech: "Flutter", desc: "写笔记、看损坏、填空修复。跨平台框架，一次代码跑 Windows/Mac/Linux/手机" },
-                { title: "大脑", tech: "Go", desc: "计算艾宾浩斯曲线、挖空位置、评分反馈。启动快、资源占用低" },
-                { title: "存储", tech: "Hive", desc: "本地数据库，直接嵌入界面层。所有笔记存你电脑上" },
-              ].map((item) => (
-                <div key={item.title} className="rounded-xl border border-white/10 bg-ink-900/40 p-5">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">{item.tech}</span>
-                  <h4 className="mt-1 font-display text-lg font-semibold text-white">{item.title}</h4>
-                  <p className="mt-2 text-sm text-slate-400">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </Section>
-
-          {/* 为什么不用AI */}
-          <Section title="七、为什么先不用 AI？">
-            <div className="space-y-4">
-              {[
-                { title: "不确定性", desc: "规则驱动下逻辑清晰、预期明确。AI 驱动下今天残缺明天模糊后天换句子——用户无法建立信任。" },
-                { title: "AI 猜得不一定准", desc: "AI 可能把'地球围绕太阳转'挖空了——你觉得理所当然的常识，AI 觉得'这个容易忘'。规则引擎不会犯这种低级错误。" },
-                { title: "离线能力", desc: "本地跑 AI 需要下载 2-4GB 模型，风扇起飞，每次操作等 1-3 秒。规则引擎毫秒级响应，零额外依赖。" },
-                { title: "复杂度陷阱", desc: "一个还没验证的项目，优先把核心机制做对、做好、做稳。AI 可以后面再加，但核心的损坏逻辑必须在项目第一天就确定。" },
-              ].map((item) => (
-                <div key={item.title} className="rounded-lg border border-white/5 bg-ink-900/40 p-4">
-                  <h4 className="font-semibold text-white">{item.title}</h4>
-                  <p className="mt-1 text-sm text-slate-400">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-            <Highlight>决定：先做规则引擎，跑稳了以后再考虑让 AI 辅助出题。规则兜底，AI 锦上添花。</Highlight>
-          </Section>
-
-          {/* 可能遇到的问题 */}
-          <Section title="八、可能遇到的问题">
-            <div className="space-y-4">
-              {[
-                { title: "「记了也白记」的恐惧", desc: "核心内容永不丢失。损坏只是展示层面的'伪装'——Hive 数据库里存的是完好的原始内容。关掉'损坏模式'，笔记完好如初。" },
-                { title: "标记关键信息太麻烦", desc: "编辑器自动检测并标记。你写'1789年7月14日'，系统自动识别为日期——零额外操作。" },
-                { title: "答错挫败感太强", desc: "答对奖励（降2级）＞答错惩罚（升1级）。坚持回顾的人会发现笔记越来越'耐用'。" },
-                { title: "适用范围窄", desc: "每条笔记可以有'类型'标签。学习型笔记启用损坏模式，工具型笔记永远完好。" },
-                { title: "多设备同步", desc: "第一版只做本地单设备。同步涉及复杂的损坏状态冲突处理，等产品稳定后再考虑。" },
-              ].map((item) => (
-                <div key={item.title} className="rounded-lg border border-white/5 bg-ink-900/40 p-4">
-                  <h4 className="font-semibold text-white">{item.title}</h4>
-                  <p className="mt-1 text-sm text-slate-400">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </Section>
-
-          {/* 路线图 */}
-          <Section title="九、实现路线图">
-            <div className="space-y-4">
-              {[
-                { phase: "第一阶段", goal: "核心骨架", time: "2-3周", items: "能写笔记、能显示损坏、能填空修复。Go 后端 + Flutter 界面 + Hive 存储 + 基础损坏引擎 + 信息填空模式 + 智能标注规则引擎" },
-                { phase: "第二阶段", goal: "模式完整", time: "1-2周", items: "五种挑战模式全部上线：错误检测、对比判断、时序重组、缩写还原。完整的评分体系" },
-                { phase: "第三阶段", goal: "体验打磨", time: "2-3周", items: "损坏动画、修复反馈、统计面板、参数调节、批量导入、类型标签" },
-                { phase: "第四阶段", goal: "可选升级", time: "待定", items: "AI 辅助出题、多设备同步、移动端、社区模板库、间隔提醒" },
-              ].map((item) => (
-                <div key={item.phase} className="rounded-xl border border-white/10 bg-ink-900/40 p-5">
-                  <div className="flex items-center gap-3">
-                    <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-300">{item.phase}</span>
-                    <span className="text-xs text-slate-500">{item.time}</span>
+                <div>
+                  <div className="text-[11px] font-bold text-white font-mono flex items-center gap-1.5">
+                    <span>第1次主动提取巩固</span>
+                    <span className="text-[10px] bg-[#C5A880]/20 text-[#E5D2B8] px-1.5 py-0.5 rounded border border-[#C5A880]/40 font-mono font-extrabold">
+                      +200%
+                    </span>
                   </div>
-                  <h4 className="mt-3 font-display text-lg font-semibold text-white">{item.goal}</h4>
-                  <p className="mt-2 text-sm text-slate-400">{item.items}</p>
+                  <div className="text-[9px] font-mono text-slate-400">遗忘临界点成功修复逆转</div>
                 </div>
-              ))}
-            </div>
-          </Section>
+              </div>
 
-          {/* 最后说几句 */}
-          <Section title="十、最后说几句">
-            <p>这个项目最让人兴奋的地方是：它对人诚实。</p>
-            <p>市面上几乎所有笔记工具都在做同一件事——帮你把信息存得更好、更快、更全。但它们从来不告诉你一个真相：存下来 ≠ 学会了。</p>
-            <p>这个工具不追求"帮你存"，它追求"让你记住"。它不给你虚假的安全感。它会直白地告诉你：你不回顾，就会失去。</p>
-            <p>这听上去有点残忍，但这就是真实记忆的运作方式。</p>
-            <blockquote className="mt-6 border-l-2 border-amber-500/50 pl-4 italic text-slate-400">
-              你很奇怪笔记为什么能记住你忘了什么？<br />
-              它不能。它只是诚实地提醒了你。
-            </blockquote>
-            <p className="mt-6 text-center text-slate-500">— 全文完 —</p>
-          </Section>
+              {/* 悬浮玻璃 Badge 2: 第2次临界提取（终身化存留） - 位置在峰值 2 (X: 510, Y: 55) */}
+              <div
+                className="absolute left-[62%] top-[5%] -translate-x-1/2 pointer-events-none hidden sm:flex items-center gap-2 rounded-xl backdrop-blur-md bg-[#090B10]/85 px-3 py-1.5 border border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.25)]"
+              >
+                <div className="h-6 w-6 rounded-lg bg-cyan-500/20 flex items-center justify-center border border-cyan-500/40">
+                  <ShieldCheck className="h-3.5 w-3.5 text-cyan-300" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-bold text-white font-mono flex items-center gap-1.5">
+                    <span>第2次临界提取</span>
+                    <span className="text-[10px] bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-500/40 font-mono font-extrabold">
+                      终身化存留
+                    </span>
+                  </div>
+                  <div className="text-[9px] font-mono text-slate-400">建立抗衰减深度神经回路</div>
+                </div>
+              </div>
+
+              {/* Dynamic Hover Card Inspection (当前时间节点记忆留存数值与对比) */}
+              {selectedNode && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute bottom-2 right-4 pointer-events-none rounded-2xl backdrop-blur-xl bg-[#090B10]/90 p-3.5 border border-[#C5A880]/40 shadow-[0_0_25px_rgba(197,168,128,0.2)] max-w-xs"
+                >
+                  <div className="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/10 pb-1.5 mb-2">
+                    <span className="font-bold text-[#E5D2B8] flex items-center gap-1">
+                      <Eye className="h-3.5 w-3.5 text-[#C5A880]" /> {selectedNode.label}
+                    </span>
+                    <span>{selectedNode.timeText}</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-center text-xs font-mono">
+                    <div className="rounded-xl bg-rose-500/10 p-2 border border-rose-500/20">
+                      <div className="text-[10px] text-rose-300">被动阅读留存</div>
+                      <div className="text-base font-extrabold text-rose-400 mt-0.5">
+                        {selectedNode.passiveRetention}%
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-[#C5A880]/15 p-2 border border-[#C5A880]/40 shadow-sm">
+                      <div className="text-[10px] text-[#E5D2B8]">FadeMemo 逆转</div>
+                      <div className="text-base font-extrabold text-[#E5D2B8] mt-0.5 flex items-center justify-center gap-1">
+                        {selectedNode.passiveRetention}% ➔ <span className="text-emerald-400">{selectedNode.fadememoRetention}%</span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            {/* X 轴 4 大时间节点卡片阵列 (Time Grid Cards 4-Card Alignment) */}
+            <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3.5 border-t border-white/10 pt-5">
+              {AXIS_NODES.map((node, idx) => {
+                const isActive = selectedNode.id === node.id;
+                return (
+                  <button
+                    key={node.id}
+                    onClick={() => {
+                      setActiveTabNode(idx);
+                      setHoveredNodeIndex(idx);
+                    }}
+                    onMouseEnter={() => setHoveredNodeIndex(idx)}
+                    className={`p-3.5 rounded-xl backdrop-blur-md flex flex-col justify-between transition-all duration-300 text-left border cursor-pointer ${
+                      isActive
+                        ? "border-[#C5A880]/40 bg-[#161B2B] shadow-[0_0_15px_rgba(197,168,128,0.1)]"
+                        : "bg-[#0F121D]/80 border-white/5 hover:border-white/20 hover:-translate-y-0.5"
+                    }`}
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <span
+                          className={`text-xs font-mono font-bold tracking-tight ${
+                            isActive ? "text-[#E5D2B8]" : "text-slate-200"
+                          }`}
+                        >
+                          {node.label}
+                        </span>
+
+                        {/* 香槟金 / 亮青绿 呼吸指示灯 */}
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          {isActive ? (
+                            <>
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C5A880] opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C5A880]"></span>
+                            </>
+                          ) : idx === 3 ? (
+                            <>
+                              <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
+                            </>
+                          ) : (
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-slate-600"></span>
+                          )}
+                        </span>
+                      </div>
+
+                      <div className="text-[10px] font-mono text-slate-400">{node.timeText}</div>
+                    </div>
+
+                    <div className="mt-3 border-t border-white/5 pt-2 flex items-center justify-between text-[11px] font-mono">
+                      <span className="text-slate-400">被动: {node.passiveRetention}%</span>
+                      <span className="text-emerald-400 font-bold flex items-center gap-1">
+                        逆转: {node.fadememoRetention}%
+                        {idx === 3 && (
+                          <span className="text-[9px] px-1 py-0.2 rounded bg-gradient-to-r from-[#C5A880]/20 to-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
+                            (终身存留)
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 当前选中节点的详细解读提示 */}
+            <div className="mt-4 rounded-xl bg-white/[0.02] p-3 border border-white/10 flex items-center justify-between text-xs text-slate-300 font-sans">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-[#C5A880] shrink-0" />
+                <span>
+                  <strong className="text-white font-mono mr-1">[{selectedNode.label}]</strong>
+                  {selectedNode.detailHint}
+                </span>
+              </div>
+              <span className="font-mono text-[10px] bg-[#C5A880]/20 text-[#E5D2B8] px-2 py-0.5 rounded border border-[#C5A880]/30 shrink-0 hidden md:inline">
+                {selectedNode.reversalBoost}
+              </span>
+            </div>
+
+          </div>
         </motion.div>
+
+        {/* 侵蚀等级对照矩阵 (Level 0 - Level 10) 动感重构 */}
+        <div className="mt-16 sm:mt-24">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-display text-xl font-black text-white flex items-center gap-2.5">
+              <ShieldAlert className="h-5 w-5 text-[#C5A880]" />
+              侵蚀等级对照矩阵 (Level 0 – Level 10)
+            </h3>
+            <span className="text-xs font-mono text-slate-400 hidden sm:inline-block">11 PROGRESSIVE STAGES</span>
+          </div>
+
+          {/* 11 个 Level 卡片交错瀑布入场 (Staggered Grid Entrance: staggerChildren: 0.05s) */}
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              hidden: {},
+              show: {
+                transition: {
+                  staggerChildren: 0.05,
+                },
+              },
+            }}
+            className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 items-stretch"
+          >
+            {LEVELS.map((lvl) => (
+              <LevelCard key={lvl.level} lvl={lvl} />
+            ))}
+          </motion.div>
+        </div>
+
       </div>
     </section>
-  );
-}
-
-/** 章节标题 */
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h3 className="font-display text-2xl font-semibold text-white">{title}</h3>
-      <div className="mt-6 space-y-4">{children}</div>
-    </div>
-  );
-}
-
-/** 子标题 */
-function SubTitle({ children }: { children: React.ReactNode }) {
-  return <h4 className="mt-6 font-display text-lg font-semibold text-slate-200">{children}</h4>;
-}
-
-/** 高亮提示块 */
-function Highlight({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-5">
-      <p className="text-sm font-medium text-amber-300">{children}</p>
-    </div>
-  );
-}
-
-/** 代码块 */
-function CodeBlock({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-lg border border-white/10 bg-ink-950 px-4 py-3 font-mono text-sm text-amber-300">
-      {children}
-    </div>
   );
 }
