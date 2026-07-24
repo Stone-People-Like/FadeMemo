@@ -1,141 +1,146 @@
 /**
- * CallToAction 行动召唤区组件
- * 页面底部区域，包含下载入口、GitHub 链接和页脚信息
- * 提供各平台下载按钮和项目仓库链接，完成用户转化闭环
+ * CallToAction.tsx - Apple / Stripe Dark Commercial Luxury CTA & Footer
  */
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Github, ArrowUpRight, Heart, Monitor, Apple, Smartphone, Globe, Terminal } from "lucide-react";
+import { Github, ArrowUpRight, Heart, Monitor, Apple, Smartphone, Globe, Terminal, Sparkles } from "lucide-react";
 import { scrollToSection } from "../lib/utils";
+import FadeMemoLogo from "./ui/FadeMemoLogo";
 
-/**
- * GitHub 仓库链接
- */
 const GITHUB_URL = "https://github.com/Stone-People-Like/FadeMemo";
 
-/**
- * 下载链接配置
- * 包含各平台的标签、路由参数和图标组件
- */
 const downloadLinks = [
-  { label: "Web", platform: "web", Icon: Globe },
-  { label: "iOS", platform: "ios", Icon: Apple },
-  { label: "Android", platform: "android", Icon: Smartphone },
-  { label: "Windows", platform: "windows", Icon: Monitor },
-  { label: "macOS", platform: "macos", Icon: Apple },
-  { label: "Linux", platform: "linux", Icon: Terminal },
+  { label: "Web 网页端", platform: "web", Icon: Globe, tag: "全端浏览器即用" },
+  { label: "iOS", platform: "ios", Icon: Apple, tag: "App Store / TestFlight" },
+  { label: "Android", platform: "android", Icon: Smartphone, tag: "原生高能 APK" },
+  { label: "Windows", platform: "windows", Icon: Monitor, tag: "Win 10 / 11 64-bit" },
+  { label: "macOS", platform: "macos", Icon: Apple, tag: "Apple Silicon 原生" },
+  { label: "Linux", platform: "linux", Icon: Terminal, tag: "AppImage 软件包" },
 ];
 
-/**
- * CallToAction 组件主函数
- * 包含行动召唤文案、平台下载按钮、GitHub 链接和页脚信息
- */
 export default function CallToAction() {
   return (
-    <section id="download" className="relative overflow-hidden py-28 md:py-36">
-      {/* 背景渐变层 */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-ink-900/80 to-ink-950" />
-      {/* 中心光晕效果 */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/10 blur-[120px]" />
+    <section id="download" className="relative overflow-hidden py-24 md:py-32 bg-[#090B10]">
+      {/* 极夜弥散光层 */}
+      <div className="pointer-events-none absolute left-1/2 top-1/3 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C5A880]/10 blur-[160px]" />
 
-      <div className="container relative">
-        {/* 行动召唤主体区域 */}
+      <div className="container max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* CTA 主体 */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7 }}
-          className="mx-auto max-w-3xl text-center"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto max-w-4xl text-center space-y-6"
         >
-          {/* 主标题 */}
-          <h2 className="font-display text-4xl font-semibold leading-tight text-white text-balance md:text-6xl">
-            让每一个想法
-            <br />
-            <span className="gradient-text">都有安放之处</span>
-          </h2>
-          {/* 副标题 */}
-          <p className="mt-8 text-lg text-slate-300 text-balance">
-            FadeMemo 完全免费，即将开源。选择你的平台，立即开始记录。
-          </p>
-
-          {/* 平台下载按钮网格 */}
-          <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {downloadLinks.map((link, index) => {
-                const Icon = link.Icon;
-                return (
-              <motion.div
-                key={link.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-              >
-                <Link
-                  to={`/download/${link.platform}`}
-                  className="group flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-ink-900/60 px-4 py-5 transition-all hover:-translate-y-1 hover:border-amber-500/40 hover:bg-ink-800"
-                >
-                  <span className="flex h-8 items-center justify-center text-2xl text-white transition-colors group-hover:text-amber-400">
-                    <Icon className="h-6 w-6" />
-                  </span>
-                  <span className="text-sm font-medium text-slate-300">
-                    {link.label}
-                  </span>
-                </Link>
-              </motion.div>
-                );
-              })}
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#C5A880]/30 bg-[#C5A880]/10 px-4 py-1.5 text-xs font-bold tracking-wider text-[#E5D2B8] backdrop-blur-md">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>START YOUR COGNITIVE RECONSTRUCTION TODAY</span>
           </div>
 
-          {/* 主 CTA 按钮：访问 GitHub */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
+          <h2 className="font-display text-4xl font-black text-white tracking-tight sm:text-6xl leading-[1.12] [text-wrap:balance]">
+            对抗遗忘，重构认知<br />
+            <span className="bg-gradient-to-r from-[#F5EFE4] via-[#E5D2B8] to-[#C5A880] bg-clip-text text-transparent">
+              让每一份知识，转化为终身能力
+            </span>
+          </h2>
+
+          <p className="mt-4 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed [text-wrap:pretty]">
+            FadeMemo 100% 零知识端到端加密，开源透明。选择您日常使用的平台，即刻开启全维度记忆固化体验！
+          </p>
+
+          {/* 6 大平台 Cards */}
+          <div className="pt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-stretch">
+            {downloadLinks.map((link, index) => {
+              const Icon = link.Icon;
+              return (
+                <motion.div
+                  key={link.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  className="h-full"
+                >
+                  <Link to={`/download/${link.platform}`} className="block h-full">
+                    <div
+                      className="group flex h-full min-h-[160px] flex-col items-center justify-between rounded-2xl border border-white/5 bg-[#0F121D]/60 p-5 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#C5A880]/30"
+                    >
+                      {/* 3D 超圆角底座 (Squircle Tile) */}
+                      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(197,168,128,0.2)] group-hover:border-[#C5A880]/30 group-hover:bg-[#C5A880]/10">
+                        <Icon className="w-5 h-5 text-[#C5A880]" strokeWidth={1.75} />
+                      </div>
+
+                      {/* 文本限制与对齐 */}
+                      <div className="w-full text-center space-y-1">
+                        <div className="font-display text-sm font-bold text-white group-hover:text-[#E5D2B8] transition-colors line-clamp-1">
+                          {link.label}
+                        </div>
+                        <div className="text-[11px] font-mono text-slate-500 line-clamp-1 h-4 flex items-center justify-center">
+                          {link.tag}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* GitHub 主按钮 */}
+          <div className="pt-8 flex flex-wrap items-center justify-center gap-4">
             <a
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full bg-amber-500 px-8 py-4 text-base font-semibold text-ink-950 transition-all hover:bg-amber-400 hover:shadow-xl hover:shadow-amber-500/40"
+              className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#C5A880] via-[#D4AF37] to-[#E5D2B8] px-9 py-4 text-base font-extrabold text-slate-950 shadow-lg shadow-[#C5A880]/20 transition-all duration-200 hover:shadow-[#C5A880]/35 hover:scale-[1.02] active:scale-[0.98]"
             >
               <Github className="h-5 w-5" />
-              访问 GitHub 仓库
+              <span>访问 GitHub 官方开源仓库</span>
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           </div>
         </motion.div>
       </div>
 
-      {/* 页脚区域 */}
-      <footer className="container relative mt-24 border-t border-white/5 pt-10">
+      {/* 页脚 */}
+      <footer className="container max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 mt-24 border-t border-white/10 pt-10">
         <div className="flex flex-col items-center justify-between gap-6 pb-8 md:flex-row">
-          {/* 品牌标识 */}
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-violet-600">
-              <span className="text-sm font-bold text-ink-950">F</span>
-            </span>
-            <span className="font-display text-lg font-semibold text-white">
-              FadeMemo
-            </span>
+          
+          {/* Logo Component */}
+          <div className="flex items-center">
+            <FadeMemoLogo />
           </div>
 
-          {/* 页脚链接 */}
-          <div className="flex items-center gap-6 text-sm text-slate-400">
-            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-amber-400">
-              GitHub
+          {/* 导航 */}
+          <div className="flex items-center gap-6 text-xs font-medium text-slate-400">
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-[#E5D2B8]">
+              GitHub 仓库
             </a>
-            <button onClick={() => scrollToSection("features")} className="transition-colors hover:text-amber-400">功能</button>
-            <button onClick={() => scrollToSection("download")} className="transition-colors hover:text-amber-400">下载</button>
+            <button onClick={() => scrollToSection("features")} className="transition-colors hover:text-[#E5D2B8]">
+              核心价值矩阵
+            </button>
+            <button onClick={() => scrollToSection("about")} className="transition-colors hover:text-[#E5D2B8]">
+              衰减逆转引擎
+            </button>
+            <button onClick={() => scrollToSection("download")} className="transition-colors hover:text-[#E5D2B8]">
+              全终端同步下载
+            </button>
           </div>
 
-          {/* 版权信息 */}
-          <div className="flex items-center gap-1.5 text-sm text-slate-500">
-            <span>用</span>
-            <Heart className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
-            <span>打造 · MIT License</span>
+          {/* License */}
+          <div className="flex items-center gap-1.5 text-xs text-slate-500">
+            <span>Crafted with</span>
+            <Heart className="h-3.5 w-3.5 fill-rose-500 text-rose-500" />
+            <span>· MIT License</span>
           </div>
         </div>
 
-        {/* 底部版权声明 */}
-        <div className="pb-8 text-center text-xs text-slate-600">
-          © 2026 Stone People Like. FadeMemo — 让灵感不再褪色。
+        {/* 版权 */}
+        <div className="pb-8 text-center text-[11px] font-mono text-slate-600">
+          © 2026 Stone People Like. FadeMemo v1.0 — 全新一代认知重塑与记忆固化系统.
         </div>
       </footer>
     </section>

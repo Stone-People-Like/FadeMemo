@@ -5,8 +5,9 @@
 
 import Navbar from "./Navbar";
 import Hero from "./Hero";
-import About from "./About";
+import DecaySandbox from "./DecaySandbox";
 import Features from "./Features";
+import About from "./About";
 import Platforms from "./Platforms";
 import Preview from "./Preview";
 import CallToAction from "./CallToAction";
@@ -18,6 +19,7 @@ export default function HomePage() {
       <Navbar />
       <main>
         <Hero />
+        <DecaySandbox />
         <Features />
         <About />
         <Platforms />

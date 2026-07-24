@@ -1,83 +1,91 @@
 /**
- * Platforms 平台支持区组件
- * 展示 FadeMemo 支持的 6 大平台：Web、iOS、Android、Windows、macOS、Linux
- * 使用网格布局，每个平台卡片包含图标、名称和状态信息
+ * Platforms.tsx - Apple / Stripe Style Cross-Platform Grid
+ * 彻底重构多平台卡片 HTML/CSS 结构，消除文字叠加重影
  */
 
 import { motion } from "framer-motion";
-import { platforms } from "../data/content";
+import { Globe, Smartphone, Monitor, Apple, Terminal } from "lucide-react";
 
-const platformIcon: Record<string, string> = {
-  globe: "🌐",
-  apple: "",
-  android: "🤖",
-  windows: "⊞",
-  terminal: ">_",
-};
+const platforms = [
+  { title: "Web 网页端", description: "全端浏览器即用", icon: Globe },
+  { title: "iOS", description: "App Store / TestFlight", icon: Apple },
+  { title: "Android", description: "原生高能 APK", icon: Smartphone },
+  { title: "Windows", description: "Win 10 / 11 64-bit", icon: Monitor },
+  { title: "macOS", description: "Apple Silicon & Intel 原生支持", icon: Apple },
+  { title: "Linux", description: "AppImage 软件包", icon: Terminal },
+];
 
 export default function Platforms() {
   return (
-    <section id="platforms" className="relative py-28 md:py-36">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-violet-600/5 to-transparent" />
+    <section id="platforms" className="relative py-24 md:py-32 bg-[#090B10] overflow-hidden">
+      {/* 暗黑弥散 glow */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[800px] rounded-full bg-[#C5A880]/5 blur-[160px]" />
 
-      <div className="container relative">
+      <div className="container max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* 标题 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="mx-auto max-w-2xl text-center"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto max-w-3xl text-center space-y-4"
         >
-          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-400">
-            全平台覆盖
-          </span>
-          <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-white text-balance md:text-5xl">
-            一处记录，<br className="hidden sm:block" />
-            随处可及
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#C5A880]/30 bg-[#C5A880]/10 px-4 py-1.5 text-xs font-bold tracking-wider text-[#E5D2B8] backdrop-blur-md">
+            <span>✦ CROSS PLATFORM COVERAGE</span>
+          </div>
+
+          <h2 className="font-display text-4xl font-black text-white sm:text-5xl tracking-tight leading-tight [text-wrap:balance]">
+            6 大平台，<br />
+            <span className="bg-gradient-to-r from-[#F5EFE4] via-[#E5D2B8] to-[#C5A880] bg-clip-text text-transparent">全终端原生无缝同步</span>
           </h2>
-          <p className="mt-6 text-lg text-slate-400 text-balance">
-            无论你身处哪个设备，FadeMemo 都能以一致体验陪伴左右。
-            基于 Flutter 构建，原生性能，跨平台如一。
+          <p className="text-slate-300 text-base md:text-lg max-w-2xl mx-auto leading-relaxed [text-wrap:pretty]">
+            无论您使用 iPhone、Mac、Windows 还是 Linux，FadeMemo 均搭载原生高能内核，确保在所有终端体验绝对无缝一致。
           </p>
         </motion.div>
 
-        <div className="mt-20 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {platforms.map((platform, index) => (
-            <motion.div
-              key={platform.name}
-              initial={{ opacity: 0, y: 24, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.45, delay: index * 0.06 }}
-              className="group relative flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-ink-900/40 p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/30 hover:bg-ink-800/60"
-            >
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-ink-950 text-2xl font-bold text-white transition-all duration-300 group-hover:border-amber-500/40 group-hover:text-amber-400">
-                {platformIcon[platform.icon] || "□"}
-              </div>
-              <div>
-                <div className="font-display text-lg font-semibold text-white">
-                  {platform.name}
+        {/* 6 大平台 Card Array */}
+        <div className="mt-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {platforms.map((platform, index) => {
+            const Icon = platform.icon;
+            return (
+              <motion.div
+                key={platform.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
+              >
+                <div className="flex flex-col items-center justify-start p-5 rounded-2xl bg-[#0F121D]/80 border border-white/5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#C5A880]/30 hover:shadow-[0_10px_25px_-5px_rgba(197,168,128,0.15)] group">
+                  {/* 1. 图标底座 */}
+                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-3 shrink-0 transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(197,168,128,0.2)] group-hover:border-[#C5A880]/30 group-hover:bg-[#C5A880]/10">
+                    <Icon className="w-5 h-5 text-[#C5A880]" strokeWidth={1.75} />
+                  </div>
+
+                  {/* 2. 标题 */}
+                  <h3 className="text-sm font-bold text-white mb-2 text-center shrink-0 group-hover:text-[#E5D2B8] transition-colors">
+                    {platform.title}
+                  </h3>
+
+                  {/* 3. 描述文字 (纯文本自然折行，绝不叠加) */}
+                  <p className="text-xs text-slate-400 text-center leading-relaxed m-0 p-0 block w-full">
+                    {platform.description}
+                  </p>
                 </div>
-                <div className="mt-1 text-xs text-slate-400">
-                  {platform.status}
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mx-auto mt-16 flex max-w-3xl items-center justify-center gap-3 rounded-xl border border-white/5 bg-ink-900/40 px-6 py-4 text-center"
-        >
-          <span className="text-sm text-slate-400">
-            基于 Flutter 构建 · Material Design 3 · 原生渲染引擎
+        {/* 底栏 Rust / WASM 标识 */}
+        <div className="mx-auto mt-12 flex max-w-2xl items-center justify-center gap-3 rounded-full border border-white/10 bg-[#0F121D]/80 px-6 py-3 text-center backdrop-blur-md">
+          <span className="text-xs font-mono text-slate-400">
+            ⚡ 搭载 WASM/Rust 本地高能内核 · 毫秒级极速响应与 100% 端到端加密
           </span>
-        </motion.div>
+        </div>
+
       </div>
     </section>
   );
 }
+
