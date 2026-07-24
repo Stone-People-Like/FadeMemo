@@ -1,17 +1,18 @@
 /**
  * Platforms.tsx - Apple / Stripe Style Cross-Platform Grid
+ * 彻底重构多平台卡片 HTML/CSS 结构，消除文字叠加重影
  */
 
 import { motion } from "framer-motion";
 import { Globe, Smartphone, Monitor, Apple, Terminal } from "lucide-react";
 
-const platformConfig = [
-  { name: "Web 网页端", status: "全端浏览器即用", icon: Globe },
-  { name: "iOS", status: "App Store / TestFlight", icon: Apple },
-  { name: "Android", status: "原生高能 APK", icon: Smartphone },
-  { name: "Windows", status: "Win 10 / 11 64-bit", icon: Monitor },
-  { name: "macOS", status: "Apple Silicon & Intel 原生支持", icon: Apple },
-  { name: "Linux", status: "AppImage 软件包", icon: Terminal },
+const platforms = [
+  { title: "Web 网页端", description: "全端浏览器即用", icon: Globe },
+  { title: "iOS", description: "App Store / TestFlight", icon: Apple },
+  { title: "Android", description: "原生高能 APK", icon: Smartphone },
+  { title: "Windows", description: "Win 10 / 11 64-bit", icon: Monitor },
+  { title: "macOS", description: "Apple Silicon & Intel 原生支持", icon: Apple },
+  { title: "Linux", description: "AppImage 软件包", icon: Terminal },
 ];
 
 export default function Platforms() {
@@ -44,33 +45,32 @@ export default function Platforms() {
         </motion.div>
 
         {/* 6 大平台 Card Array */}
-        <div className="mt-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-stretch">
-          {platformConfig.map((item, index) => {
-            const Icon = item.icon;
+        <div className="mt-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {platforms.map((platform, index) => {
+            const Icon = platform.icon;
             return (
               <motion.div
-                key={item.name}
+                key={platform.title}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="h-full"
               >
-                <div className="group relative flex h-full flex-col items-center justify-start p-6 rounded-2xl bg-[#0F121D]/70 border border-white/5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#C5A880]/30 hover:shadow-[0_10px_25px_-5px_rgba(197,168,128,0.15)]">
-                  {/* 1. Icon 底座 */}
-                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 shrink-0 shadow-inner transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(197,168,128,0.2)] group-hover:border-[#C5A880]/30 group-hover:bg-[#C5A880]/10">
+                <div className="flex flex-col items-center justify-start p-5 rounded-2xl bg-[#0F121D]/80 border border-white/5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#C5A880]/30 hover:shadow-[0_10px_25px_-5px_rgba(197,168,128,0.15)] group">
+                  {/* 1. 图标底座 */}
+                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-3 shrink-0 transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(197,168,128,0.2)] group-hover:border-[#C5A880]/30 group-hover:bg-[#C5A880]/10">
                     <Icon className="w-5 h-5 text-[#C5A880]" strokeWidth={1.75} />
                   </div>
 
-                  {/* 2. 平台标题 */}
-                  <div className="text-sm font-bold text-white mb-2 shrink-0 text-center group-hover:text-[#E5D2B8] transition-colors">
-                    {item.name}
-                  </div>
+                  {/* 2. 标题 */}
+                  <h3 className="text-sm font-bold text-white mb-2 text-center shrink-0 group-hover:text-[#E5D2B8] transition-colors">
+                    {platform.title}
+                  </h3>
 
-                  {/* 3. 底部描述 */}
-                  <div className="text-xs text-slate-400 text-center leading-relaxed whitespace-normal">
-                    {item.status}
-                  </div>
+                  {/* 3. 描述文字 (纯文本自然折行，绝不叠加) */}
+                  <p className="text-xs text-slate-400 text-center leading-relaxed m-0 p-0 block w-full">
+                    {platform.description}
+                  </p>
                 </div>
               </motion.div>
             );
@@ -78,7 +78,7 @@ export default function Platforms() {
         </div>
 
         {/* 底栏 Rust / WASM 标识 */}
-        <div className="mx-auto mt-12 flex max-w-2xl items-center justify-center gap-3 rounded-full border border-white/10 bg-white/[0.02] px-6 py-3 text-center backdrop-blur-md">
+        <div className="mx-auto mt-12 flex max-w-2xl items-center justify-center gap-3 rounded-full border border-white/10 bg-[#0F121D]/80 px-6 py-3 text-center backdrop-blur-md">
           <span className="text-xs font-mono text-slate-400">
             ⚡ 搭载 WASM/Rust 本地高能内核 · 毫秒级极速响应与 100% 端到端加密
           </span>
