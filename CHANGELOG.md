@@ -7,6 +7,90 @@
 
 ---
 
+## [0.0.1-alpha.3] - 2026-07-24 · 基础设施与文档体系完善
+
+> 🧱 内部基础设施全面升级：`lib/` 按 mobile / desktop 分层重构、文档体系从零搭建到覆盖 README / 版本号 / AI Agent / 产品概念报告、官网新增下载页与产品介绍页。
+> **应用功能与对外行为完全不变**，依然是 alpha 预览，不建议生产环境使用。
+
+### ✨ 主要新增
+
+#### 🌐 官网（website/）
+
+- **产品介绍页**（`About.tsx`）— 展示产品理念与核心机制
+- **下载页面**（`DownloadPage.tsx`）— 入口路由 + 锚点跳转
+- **返回顶部悬浮球**（`BackToTop.tsx`）
+- `HomePage.tsx` 重构支持路由
+- `Navbar.tsx` / `CallToAction.tsx` / `Hero.tsx` 同步调整
+
+#### 🧪 测试（10 项全绿）
+
+- `test/data/char_state_test.dart` — `CharState.copyWith` 正确性
+- `test/data/memo_test.dart` — `Memo` content 自动拼接
+- `test/core/forgetting_engine_test.dart` — 8 项遗忘算法回归（保持）
+
+#### 📚 文档
+
+- **README.md** — 基于《记·忘_产品概念报告》重写
+  - 新增「🤔 为什么需要这样一个工具」
+  - 新增「❓ 常见问题」5 项（白记恐惧 / 标记麻烦 / 挫败感 / 适用范围 / 多设备同步）
+  - 新增「💬 最后说几句」结语
+- **VERSIONING.md** — 新增 SemVer 2.0.0 + Flutter `+build` 规范
+- **CONTRIBUTING.md** — 重构为 AI Agent 行为准则
+- **记·忘_产品概念报告.md** — 新增产品概念报告（MD 版）
+- **.github/PULL_REQUEST_TEMPLATE.md** — 新增 PR 模板（含 Conventional Commits + 自测清单）
+
+#### 🤖 多 AI 工具适配
+
+| 文件 | 适配工具 |
+| :--- | :--- |
+| `AGENTS.md` | 通用（Zed / Aider / CodeWhale） |
+| `CLAUDE.md` | Claude Code |
+| `.cursorrules` | Cursor |
+| `.clinerules` | Cline |
+| `.windsurfrules` | Windsurf |
+| `.github/copilot-instructions.md` | GitHub Copilot |
+
+### 🔧 重构
+
+- `lib/` 按 mobile / desktop 分层重组：
+  - `features/home/` → `features/mobile/`（含 `canvas/` `controls/` `editor/` `library/` `widgets/` 子目录）
+  - 新增 `features/desktop/` 与 mobile 平级
+  - 新增 `lib/app/platform_router.dart`，App 根不再直接判断平台
+- 文件重命名：`memo_model.dart` → `memo.dart`、`home_screen.dart` → `mobile_home_screen.dart`
+- `test/` 同步重组为 `core/` 与 `data/` 子目录
+- `pubspec.yaml` 微调
+
+### 🧹 清理
+
+- 删除 `.trae/skills/` 目录（5 个项目级 Skill 已合并进 CONTRIBUTING.md）
+
+### ⚠️ 已知问题 / 限制
+
+- iOS / macOS / Android 暂未在 CI 中跑真实构建（需对应 SDK）
+- 后端同步 / 云端备份（PRD Phase 2）尚未实现
+- 仅中文 UI（README 英文入口待补 `README_EN.md`）
+- 字符级 importance 调整（目前所有字符共享 Memo 级 importance）
+
+### 🛠️ 技术栈
+
+| 类别 | 技术 | 版本 |
+| :--- | :--- | :---: |
+| 框架 | Flutter | `3.44.7` |
+| 语言 | Dart | `3.12.2` |
+| 本地数据库 | Hive | `2.2.3` |
+| 配置存储 | SharedPreferences | `2.3.4` |
+| 状态管理 | Provider | `6.1.2` |
+| 字体 | Noto Serif SC | `6.3.3` |
+
+### 🧪 测试
+
+```
+$ flutter test
+00:00 +10: All tests passed!
+```
+
+---
+
 ## [0.0.1-alpha.2] - 2026-07-21 · 桌面端 alpha 预览版
 
 > 🖥️ 在 alpha.1 基础上新增 **桌面端专属 UI**（Windows / macOS / Linux）。
