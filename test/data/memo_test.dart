@@ -34,5 +34,22 @@ void main() {
       );
       expect(memo.content, 'hi');
     });
+
+    test('copyWith 可以同时更新标题和正文', () {
+      final now = DateTime(2024, 1, 1);
+      final memo = Memo(
+        id: 'test',
+        title: '旧标题',
+        rawContent: '旧正文',
+        chars: const [],
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      final updated = memo.copyWith(title: '新标题', rawContent: '新正文');
+
+      expect(updated.title, '新标题');
+      expect(updated.rawContent, '新正文');
+    });
   });
 }
