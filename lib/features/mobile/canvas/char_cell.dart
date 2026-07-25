@@ -123,10 +123,11 @@ class _CharCellState extends State<CharCell>
         animation: _ctrl,
         builder: (context, _) {
           final now = DateTime.now();
-          final strength = ForgettingEngine.computeStrength(
+          final strength = ForgettingEngine.effectiveStrength(
+            strength: widget.charState.strength,
             importance: widget.charState.importance,
             lambda: widget.lambda,
-            createdAt: widget.charState.createTime,
+            lastRecall: widget.charState.lastRecall,
             now: now,
           );
           final state = ForgettingEngine.resolveState(strength);
@@ -228,8 +229,10 @@ class _BlurryChar extends StatelessWidget {
     final sigma = 0.5 + t * 3.0;
     final opacity = 0.85 - t * 0.35;
     // 微小抖动（±1px）
-    final dx = math.sin(phase * 2 * math.pi * AppConstants.blurJitterFreq) * 1.2;
-    final dy = math.cos(phase * 2 * math.pi * AppConstants.blurJitterFreq) * 0.8;
+    final dx =
+        math.sin(phase * 2 * math.pi * AppConstants.blurJitterFreq) * 1.2;
+    final dy =
+        math.cos(phase * 2 * math.pi * AppConstants.blurJitterFreq) * 0.8;
 
     return Transform.translate(
       offset: Offset(dx, dy),

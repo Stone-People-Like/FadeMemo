@@ -53,6 +53,21 @@ class ForgettingEngine {
     return MemoryState.disappeared;
   }
 
+  /// 将时间衰减与用户动作写入的当前强度合并为最终显示强度。
+  static double effectiveStrength({
+    required double strength,
+    required double importance,
+    required double lambda,
+    required DateTime lastRecall,
+    required DateTime now,
+  }) {
+    final elapsed = now.difference(lastRecall).inMilliseconds / 1000.0;
+    if (elapsed <= 0) return strength.clamp(0.0, 1.0);
+    final decayed = strength *
+        math.exp(-lambda * math.pow(elapsed, computeBeta(importance)));
+    return decayed.clamp(0.0, 1.0);
+  }
+
   /// 回忆行为：提升单个字符的强度
   ///
   /// [strength] 当前强度
