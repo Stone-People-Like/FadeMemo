@@ -7,6 +7,18 @@
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- 更新 Android 启动图标为新的 FadeMemo 品牌图形，并补齐各屏幕密度的 launcher 资源。
+
+### Documentation
+
+- 新增 Android UI 设计规范，明确主题、组件、响应式布局、实现范围与无障碍交付要求。
+
+---
+
 ## [0.0.1-alpha.3] - 2026-07-24 · 基础设施与文档体系完善
 
 > 🧱 内部基础设施全面升级：`lib/` 按 mobile / desktop 分层重构、文档体系从零搭建到覆盖 README / 版本号 / AI Agent / 产品概念报告、官网新增下载页与产品介绍页。
