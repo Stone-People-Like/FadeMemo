@@ -2,27 +2,16 @@
 version: alpha
 name: FadeMemo Android
 description: FadeMemo Flutter application design language for the Android product surface.
-themes:
-  light:
-    background: "#FBF8F3"
-    surface: "#FFFFFF"
-    ink: "#2C2A26"
-    ink-soft: "#6B6660"
-    primary: "#756684"
-    divider: "#00000014"
-    on-primary: "#FBF8F3"
-    error: "#B5575C"
-    on-error: "#FFFFFF"
-  dark:
-    background: "#14171C"
-    surface: "#1B2027"
-    ink: "#E8E2D5"
-    ink-soft: "#9A9385"
-    primary: "#A6B4D0"
-    divider: "#FFFFFF22"
-    on-primary: "#14171C"
-    error: "#B5575C"
-    on-error: "#FFFFFF"
+colors:
+  background: "#FBF8F3"
+  surface: "#FFFFFF"
+  ink: "#2C2A26"
+  ink-soft: "#6B6660"
+  primary: "#756684"
+  divider: "#00000014"
+  on-primary: "#FBF8F3"
+  error: "#B5575C"
+  on-error: "#FFFFFF"
 typography:
   body-large:
     fontFamily: Noto Serif SC
@@ -73,45 +62,25 @@ spacing:
   desktop-breakpoint: 1200px
 components:
   app-bar:
-    backgroundColor:
-      light: "{themes.light.background}"
-      dark: "{themes.dark.background}"
-    textColor:
-      light: "{themes.light.ink}"
-      dark: "{themes.dark.ink}"
+    backgroundColor: "{colors.background}"
+    textColor: "{colors.ink}"
     typography: "{typography.app-bar-title}"
   card:
-    backgroundColor:
-      light: "{themes.light.surface}"
-      dark: "{themes.dark.surface}"
-    textColor:
-      light: "{themes.light.ink}"
-      dark: "{themes.dark.ink}"
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.card}"
   divider:
-    backgroundColor:
-      light: "{themes.light.divider}"
-      dark: "{themes.dark.divider}"
+    backgroundColor: "{colors.divider}"
   metadata:
-    textColor:
-      light: "{themes.light.ink-soft}"
-      dark: "{themes.dark.ink-soft}"
+    textColor: "{colors.ink-soft}"
     typography: "{typography.metadata}"
   input:
-    backgroundColor:
-      light: "{themes.light.surface}"
-      dark: "{themes.dark.surface}"
-    textColor:
-      light: "{themes.light.ink}"
-      dark: "{themes.dark.ink}"
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.input}"
   button-primary:
-    backgroundColor:
-      light: "{themes.light.primary}"
-      dark: "{themes.dark.primary}"
-    textColor:
-      light: "{themes.light.on-primary}"
-      dark: "{themes.dark.on-primary}"
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
     typography: "{typography.button-label}"
     rounded: "{rounded.button}"
 ---
@@ -136,7 +105,7 @@ The four renderer states (`clear`, `blurry`, `garbled`, and `disappeared`) are n
 
 The light theme uses warm paper, white writing surfaces, ink, and softened ink for a calm reading environment. Mist violet is the single interaction accent. The dark theme shifts the same hierarchy to ink-cyan surfaces, rice-white content, and a muted ghost-blue accent rather than introducing a second visual language.
 
-Each component color declares explicit `light` and `dark` references into the corresponding theme in frontmatter. The light primary token is darkened from the alpha prototype so paper-colored text reaches a WCAG AA contrast ratio of approximately 4.97:1.
+The alpha design.md schema cannot encode theme modes, so frontmatter exports the light theme as the default `colors` set and the table below preserves the exact dark-theme values for implementation. Component references resolve against the exported light tokens. The light primary token is darkened from the alpha prototype so paper-colored text reaches a WCAG AA contrast ratio of approximately 4.97:1.
 
 ## Themes
 
