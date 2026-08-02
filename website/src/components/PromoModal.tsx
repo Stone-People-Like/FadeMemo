@@ -156,7 +156,7 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="promo-modal-title"
-          className="glass-card relative z-10 max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-2xl border border-white/15 p-4 shadow-2xl shadow-black sm:rounded-3xl sm:p-6 md:p-10"
+          className="glass-card relative z-10 max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl overflow-hidden rounded-2xl border border-white/15 shadow-2xl shadow-black sm:rounded-3xl"
         >
           {/* 关闭按钮 */}
           <button
@@ -167,8 +167,12 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
             <X className="h-5 w-5" />
           </button>
 
-          {/* 顶栏 Scene 标签 */}
-          <div className="flex flex-wrap items-center gap-2 pr-12 sm:gap-3">
+          <div
+            data-testid="promo-modal-scroll"
+            className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto overscroll-contain p-4 sm:p-6 md:p-10"
+          >
+            {/* 顶栏 Scene 标签 */}
+            <div className="flex flex-wrap items-center gap-2 pr-12 sm:gap-3">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C5A880]/40 bg-[#C5A880]/15 px-3.5 py-1 text-xs font-mono font-bold text-[#E5D2B8]">
               <IconComponent className="h-3.5 w-3.5 text-[#C5A880]" />
               {current.badge}
@@ -241,6 +245,7 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
                   />
                 </button>
               ))}
+            </div>
             </div>
           </div>
         </motion.div>
