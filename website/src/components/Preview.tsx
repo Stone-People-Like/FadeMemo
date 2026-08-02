@@ -80,7 +80,7 @@ export default function Preview() {
   };
 
   return (
-    <section id="preview" className="relative py-28 md:py-36 bg-[#090B10] overflow-hidden">
+    <section id="preview" className="relative overflow-hidden bg-[#090B10] py-16 sm:py-28 md:py-36">
       {/* 弥散极夜紫/金光 */}
       <div className="pointer-events-none absolute right-10 top-1/4 h-[500px] w-[500px] rounded-full bg-[#111420] blur-[160px]" />
       <div className="pointer-events-none absolute left-10 bottom-1/4 h-[500px] w-[500px] rounded-full bg-[#C5A880]/10 blur-[160px]" />
@@ -100,7 +100,7 @@ export default function Preview() {
             <span>PRODUCT EXPERIENCE PREVIEW</span>
           </div>
 
-          <h2 className="font-display text-4xl font-black text-white sm:text-5xl tracking-tight leading-tight [text-wrap:balance]">
+          <h2 className="font-display text-3xl font-black leading-tight tracking-tight text-white [text-wrap:balance] sm:text-5xl">
             极致简约的界面，<br />
             <span className="bg-gradient-to-r from-[#F5EFE4] via-[#E5D2B8] to-[#C5A880] bg-clip-text text-transparent">极致不凡的体验</span>
           </h2>
@@ -111,14 +111,14 @@ export default function Preview() {
 
         {/* 交互 Tab & 动态演示 Frame */}
         <div
-          className="mt-16 grid items-center gap-12 lg:grid-cols-12"
+          className="mt-10 grid min-w-0 items-center gap-8 sm:mt-16 sm:gap-12 lg:grid-cols-12"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
           
           {/* 左侧选择按钮: 物理滑动胶囊 (Floating Spring Indicator) */}
-          <div className="lg:col-span-4 space-y-4">
-            <div className="relative space-y-3">
+          <div className="min-w-0 space-y-4 lg:col-span-4">
+            <div className="relative grid gap-2 sm:block sm:space-y-3">
               {slides.map((slide, index) => {
                 const Icon = slide.icon;
                 const isActive = active === index;
@@ -126,14 +126,15 @@ export default function Preview() {
                   <button
                     key={slide.title}
                     onClick={() => handleSelectTab(index)}
-                    className="group relative block w-full rounded-2xl p-5 text-left outline-none select-none transition-colors"
+                    className="group relative block min-h-11 w-full rounded-2xl p-3.5 text-left outline-none transition-colors sm:p-5"
                   >
                     {/* 物理滑动胶囊 layoutId="activeTabPill" */}
                     {isActive && (
                       <motion.div
-                        layoutId="activeTabPill"
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="absolute inset-0 rounded-2xl border border-[#C5A880]/40 bg-gradient-to-r from-[#C5A880]/15 via-[#C5A880]/10 to-[#C5A880]/05 shadow-xl shadow-[#C5A880]/10 backdrop-blur-md z-0"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute inset-0 z-0 rounded-2xl border border-[#C5A880]/40 bg-gradient-to-r from-[#C5A880]/15 via-[#C5A880]/10 to-[#C5A880]/05 shadow-xl shadow-[#C5A880]/10 backdrop-blur-md"
                       >
                         {/* 0.5px 香槟金渐变边框高光微光 */}
                         <div className="absolute inset-x-4 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#C5A880]/80 to-transparent" />
@@ -168,7 +169,7 @@ export default function Preview() {
                           transition={{ duration: 0.25, ease: "easeOut" }}
                           className="relative z-10 overflow-hidden"
                         >
-                          <p className="text-xs leading-relaxed text-slate-300 pl-13">
+                          <p className="pl-[3.375rem] text-xs leading-relaxed text-slate-300">
                             {slide.subtitle}
                           </p>
                         </motion.div>
@@ -180,25 +181,25 @@ export default function Preview() {
             </div>
 
             {/* 自动巡航进度 (Auto-Play Carousel) & 导航控制 */}
-            <div className="pt-3 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center justify-between pt-1 sm:pt-3">
+              <div className="flex w-full min-w-0 items-center justify-between gap-2 sm:w-auto sm:flex-wrap sm:justify-start sm:gap-3">
                 <button
                   onClick={prev}
                   aria-label="Previous"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition-all hover:border-[#C5A880] hover:bg-[#C5A880] hover:text-slate-950 active:scale-95 shadow-md"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white shadow-md transition-all hover:border-[#C5A880] hover:bg-[#C5A880] hover:text-slate-950 active:scale-95"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={next}
                   aria-label="Next"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition-all hover:border-[#C5A880] hover:bg-[#C5A880] hover:text-slate-950 active:scale-95 shadow-md"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white shadow-md transition-all hover:border-[#C5A880] hover:bg-[#C5A880] hover:text-slate-950 active:scale-95"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
 
                 {/* 5 秒倒计时进度条与 01 / 03 序号 */}
-                <div className="ml-2 flex items-center gap-2.5 bg-white/5 border border-white/10 px-3.5 py-2 rounded-full backdrop-blur-md">
+                <div className="flex min-h-11 min-w-0 flex-1 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-md sm:ml-2 sm:flex-none sm:gap-2.5 sm:px-3.5">
                   <span className="font-mono text-xs font-bold text-[#E5D2B8]">
                     0{active + 1} / 0{slides.length}
                   </span>
@@ -221,7 +222,7 @@ export default function Preview() {
           </div>
 
           {/* 右侧：3D Depth Crossfade & 3D Tilt Preview Frame */}
-          <div className="lg:col-span-8">
+          <div className="min-w-0 lg:col-span-8">
             <div className="relative mx-auto max-w-2xl">
               {/* 背景弥散霓虹斑彩 */}
               <div className="pointer-events-none absolute -inset-4 bg-gradient-to-br from-[#C5A880]/20 via-cyan-500/15 to-violet-500/15 blur-3xl opacity-70" />
@@ -234,22 +235,22 @@ export default function Preview() {
               >
                 {/* Window Topbar */}
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 bg-white/[0.04] backdrop-blur-md">
-                  <div className="flex gap-2">
+                  <div className="hidden gap-2 sm:flex">
                     <span className="h-3 w-3 rounded-full bg-rose-500/80" />
                     <span className="h-3 w-3 rounded-full bg-[#C5A880]/80" />
                     <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#C5A880] animate-pulse" />
-                    <span className="font-mono text-xs text-slate-400 font-bold tracking-wide">
+                    <span className="font-mono text-[10px] font-bold tracking-wide text-slate-400 sm:text-xs">
                       FadeMemo Studio v2.4
                     </span>
                   </div>
-                  <span className="w-12" />
+                  <span className="hidden w-12 sm:block" />
                 </div>
 
                 {/* Main Viewport Content with 3D Depth Crossfade */}
-                <div className="aspect-[16/10] bg-[#06080C] p-6 overflow-hidden relative">
+                <div className="relative min-h-[390px] overflow-hidden bg-[#06080C] p-3 sm:aspect-[16/10] sm:min-h-0 sm:p-6">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={active}
@@ -305,12 +306,12 @@ function MockupContent({ type }: { type: Slide["mockup"] }) {
         className="flex h-full flex-col gap-4 font-sans"
       >
         {/* Header */}
-        <motion.div variants={cardVariants} className="flex items-center justify-between border-b border-white/5 pb-2">
+        <motion.div variants={cardVariants} className="flex flex-col items-start gap-2 border-b border-white/5 pb-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-[#C5A880]" />
-            <div className="font-display text-xl font-bold text-white">我的 FadeMemo 笔记</div>
+            <div className="font-display text-base font-bold text-white sm:text-xl">我的 FadeMemo 笔记</div>
           </div>
-          <div className="flex gap-2 font-mono">
+          <div className="flex flex-wrap gap-2 font-mono">
             <div className="rounded-full bg-[#C5A880] px-3 py-0.5 text-xs font-bold text-slate-950">全部 (24)</div>
             <div className="rounded-full bg-white/5 px-3 py-0.5 text-xs text-slate-400 border border-white/10">历史考点</div>
             <div className="rounded-full bg-white/5 px-3 py-0.5 text-xs text-slate-400 border border-white/10">计算机体系</div>
@@ -328,14 +329,14 @@ function MockupContent({ type }: { type: Slide["mockup"] }) {
             <motion.div
               key={i}
               variants={cardVariants}
-              className="rounded-xl border border-white/10 bg-[#090B10]/80 p-3.5 flex items-center justify-between hover:border-[#C5A880]/40 transition-colors shadow-sm"
+            className="flex min-w-0 items-center justify-between rounded-xl border border-white/10 bg-[#090B10]/80 p-3 shadow-sm transition-colors hover:border-[#C5A880]/40 sm:p-3.5"
             >
-              <div className="space-y-1">
+              <div className="min-w-0 space-y-1">
                 <div className="flex items-center gap-2">
                   <span className={`h-2.5 w-2.5 rounded-full ${item.c}`} />
-                  <span className="text-sm font-bold text-white">{item.t}</span>
+                  <span className="truncate text-xs font-bold text-white sm:text-sm">{item.t}</span>
                 </div>
-                <p className="text-xs text-slate-400">{item.d}</p>
+                <p className="truncate text-[11px] text-slate-400 sm:text-xs">{item.d}</p>
               </div>
               <div className="flex items-center gap-3 shrink-0">
                 <span className="font-mono text-[10px] font-bold text-[#E5D2B8] bg-[#C5A880]/10 px-2 py-1 rounded border border-[#C5A880]/30">
@@ -364,13 +365,13 @@ function MockupContent({ type }: { type: Slide["mockup"] }) {
               <Tag className="h-3 w-3" /> 计算机体系结构
             </span>
           </div>
-          <div className="flex items-center gap-1 text-xs font-mono text-slate-500">
+          <div className="hidden items-center gap-1 text-xs font-mono text-slate-500 sm:flex">
             <Clock className="h-3 w-3 text-slate-400" />
             <span>2026.07.24 · UPDATED</span>
           </div>
         </motion.div>
 
-        <motion.div variants={cardVariants} className="font-display text-2xl font-bold text-white">
+        <motion.div variants={cardVariants} className="font-display text-lg font-bold text-white sm:text-2xl">
           操作系统 CSAPP 虚拟内存与 TLB 快表
         </motion.div>
 
@@ -396,7 +397,7 @@ function MockupContent({ type }: { type: Slide["mockup"] }) {
       animate="show"
       className="flex h-full flex-col gap-4 font-sans"
     >
-      <motion.div variants={cardVariants} className="flex items-center justify-between border-b border-white/10 pb-2">
+      <motion.div variants={cardVariants} className="flex flex-col items-start gap-2 border-b border-white/10 pb-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="font-display text-xl font-bold text-white flex items-center gap-2">
           <Palette className="h-4 w-4 text-[#C5A880]" />
           色彩化分类图谱
@@ -418,7 +419,7 @@ function MockupContent({ type }: { type: Slide["mockup"] }) {
           <motion.div
             key={cat.n}
             variants={cardVariants}
-            className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#090B10] p-4 backdrop-blur-md hover:border-[#C5A880]/40 transition-colors group"
+            className="group relative overflow-hidden rounded-xl border border-white/10 bg-[#090B10] p-2.5 backdrop-blur-md transition-colors hover:border-[#C5A880]/40 sm:rounded-2xl sm:p-4"
           >
             <div
               className={`absolute right-0 top-0 h-16 w-16 rounded-full blur-2xl opacity-40 transition-opacity group-hover:opacity-70 ${
@@ -431,7 +432,7 @@ function MockupContent({ type }: { type: Slide["mockup"] }) {
                   cat.c === "gold" ? "bg-[#C5A880]" : cat.c === "cyan" ? "bg-cyan-400" : cat.c === "aurora" ? "bg-violet-400" : "bg-rose-400"
                 }`}
               />
-              <div className="font-display text-base font-bold text-white group-hover:text-[#E5D2B8] transition-colors">
+              <div className="font-display text-sm font-bold text-white transition-colors group-hover:text-[#E5D2B8] sm:text-base">
                 {cat.n}
               </div>
               <div className="mt-1 font-mono text-xs text-slate-400">{cat.count} 条笔记卡片</div>

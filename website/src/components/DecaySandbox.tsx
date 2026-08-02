@@ -14,7 +14,6 @@ import {
   RotateCcw,
   Play,
   Pause,
-  KeyRound,
   Zap,
 } from "lucide-react";
 
@@ -157,7 +156,7 @@ export default function DecaySandbox() {
   const currentRetention = repaired ? 100 : currentStage.retention;
 
   return (
-    <section className="relative py-20 md:py-32 bg-[#090B10] overflow-hidden">
+    <section className="relative overflow-hidden bg-[#090B10] py-16 sm:py-20 md:py-32">
       {/* 暗黑香槟金弥散背景 */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[850px] rounded-full bg-[#C5A880]/10 blur-[170px]" />
 
@@ -195,10 +194,10 @@ export default function DecaySandbox() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mx-auto mt-12 max-w-4xl"
         >
-          <div className="rounded-3xl glass-card p-6 shadow-2xl md:p-10 border border-white/10 relative overflow-hidden glass-card-hover">
+          <div className="glass-card glass-card-hover relative overflow-hidden rounded-3xl border border-white/10 p-4 shadow-2xl sm:p-6 md:p-10">
             {/* 顶栏控件与自动演播按钮 */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col items-stretch justify-between gap-4 border-b border-white/10 pb-5 sm:flex-row sm:flex-wrap sm:items-center sm:pb-6">
+              <div className="flex items-center gap-3 sm:justify-end">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#C5A880]/15 border border-[#C5A880]/30 text-[#E5D2B8] shadow-sm">
                   <Clock className="h-5 w-5" />
                 </div>
@@ -214,7 +213,7 @@ export default function DecaySandbox() {
                 {/* 自动演播按钮 */}
                 <button
                   onClick={() => setIsAutoPlaying((prev) => !prev)}
-                  className={`inline-flex items-center gap-2 rounded-xl border px-3.5 py-1.5 text-xs font-bold font-mono transition-all duration-300 active:scale-95 ${
+                  className={`inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-bold font-mono transition-all duration-300 active:scale-95 sm:flex-none ${
                     isAutoPlaying
                       ? "border-[#C5A880] bg-[#C5A880]/20 text-[#F5EFE4] shadow-[0_0_15px_rgba(197,168,128,0.4)]"
                       : "border-white/15 bg-white/5 text-slate-300 hover:border-[#C5A880]/50 hover:text-[#E5D2B8]"
@@ -251,7 +250,7 @@ export default function DecaySandbox() {
                     <button
                       key={n.day}
                       onClick={() => handleSelectNode(idx)}
-                      className={`group flex flex-col items-center transition-all duration-300 py-1 rounded-lg ${
+                      className={`group flex min-h-11 flex-col items-center justify-center rounded-lg py-1 transition-all duration-300 ${
                         isActive ? "scale-105" : "opacity-70 hover:opacity-100"
                       }`}
                     >
@@ -338,7 +337,7 @@ export default function DecaySandbox() {
                   : {}
               }
               transition={{ duration: 1.2, ease: "easeOut" }}
-              className="mt-8 rounded-2xl bg-[#06080C] p-6 md:p-8 border border-white/10 relative min-h-[170px] flex flex-col justify-between shadow-inner transition-all duration-300"
+              className="relative mt-8 flex min-h-[170px] flex-col justify-between rounded-2xl border border-white/10 bg-[#06080C] p-4 shadow-inner transition-all duration-300 sm:p-6 md:p-8"
             >
               {/* 笔记顶部 Header: Symbol + 神经保留度与进度条 */}
               <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 border-b border-white/5 pb-3 font-mono">
@@ -431,7 +430,7 @@ export default function DecaySandbox() {
               </div>
 
               {/* 提示与重置 */}
-              <div className="flex items-center justify-between text-xs text-slate-400 border-t border-white/5 pt-3">
+              <div className="flex flex-col items-start gap-3 border-t border-white/5 pt-3 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
                 <span className="italic text-slate-300">💡 {currentStage.hint}</span>
                 {repaired && (
                   <button
@@ -462,18 +461,18 @@ export default function DecaySandbox() {
                     当前知识点处于 100% 峰值状态。请点击/拖动时间轴节点模拟时间流逝。
                   </div>
                 ) : (
-                  <div className="flex flex-wrap items-center gap-2 flex-1 max-w-lg">
-                    <form onSubmit={handleTestSubmit} className="flex gap-2 flex-1 min-w-[240px]">
+                  <div className="flex w-full min-w-0 flex-1 flex-wrap items-center gap-2 sm:max-w-lg">
+                    <form onSubmit={handleTestSubmit} className="flex w-full min-w-0 flex-1 flex-col gap-2 sm:flex-row">
                       <input
                         type="text"
                         placeholder="输入正确答案 (例如: 巴士底狱)"
                         value={userInput}
                         onChange={(e) => setUserInput(e.target.value)}
-                        className="flex-1 rounded-xl bg-[#06080C] px-4 py-2.5 text-sm text-white border border-white/15 focus:border-[#C5A880] focus:outline-none transition-colors"
+                        className="min-h-11 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#06080C] px-4 py-2.5 text-base text-white transition-colors focus:border-[#C5A880] focus:outline-none sm:text-sm"
                       />
                       <button
                         type="submit"
-                        className="rounded-xl bg-gradient-to-r from-[#C5A880] to-[#E5D2B8] px-5 py-2.5 text-sm font-extrabold text-slate-950 transition-all hover:from-[#E5D2B8] hover:to-[#C5A880] whitespace-nowrap active:scale-95 shadow-[0_0_12px_rgba(197,168,128,0.3)]"
+                        className="min-h-11 w-full whitespace-nowrap rounded-xl bg-gradient-to-r from-[#C5A880] to-[#E5D2B8] px-5 py-2.5 text-sm font-extrabold text-slate-950 shadow-[0_0_12px_rgba(197,168,128,0.3)] transition-all hover:from-[#E5D2B8] hover:to-[#C5A880] active:scale-95 sm:w-auto"
                       >
                         提交重构
                       </button>
@@ -483,7 +482,7 @@ export default function DecaySandbox() {
                     {!repaired && (
                       <button
                         onClick={triggerReconstruction}
-                        className="rounded-xl border border-[#C5A880]/40 bg-[#C5A880]/10 px-3.5 py-2.5 text-xs font-bold text-[#E5D2B8] hover:bg-[#C5A880]/20 transition-all active:scale-95 flex items-center gap-1.5 whitespace-nowrap"
+                        className="flex min-h-11 w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-[#C5A880]/40 bg-[#C5A880]/10 px-3.5 py-2.5 text-xs font-bold text-[#E5D2B8] transition-all hover:bg-[#C5A880]/20 active:scale-95 sm:w-auto"
                         title="一键演示文字解密重构与微光脉冲"
                       >
                         <Zap className="h-3.5 w-3.5 text-[#C5A880]" />

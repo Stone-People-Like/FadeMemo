@@ -114,6 +114,22 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
     return () => clearInterval(timer);
   }, [isOpen, isPlaying, scenes.length]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const current = scenes[currentScene];
@@ -121,7 +137,7 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))] [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))] [padding-top:max(0.75rem,env(safe-area-inset-top))] sm:p-6 md:p-10">
         {/* 高斯模糊全屏遮罩 Modal Zoom & Blur Scale */}
         <motion.div
           initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
@@ -133,22 +149,26 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
 
         {/* 演播卡片大屏 带有极致物理弹簧 (Spring Physics) */}
         <motion.div
-          initial={{ scale: 0.8, opacity: 0, y: 30, filter: "blur(12px)" }}
-          animate={{ scale: 1, opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ scale: 0.8, opacity: 0, y: 30, filter: "blur(12px)" }}
+          initial={{ scale: 0.8, opacity: 0, y: 30 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.8, opacity: 0, y: 30 }}
           transition={{ type: "spring", stiffness: 220, damping: 22 }}
-          className="relative z-10 w-full max-w-3xl rounded-3xl border border-white/15 glass-card p-6 md:p-10 shadow-2xl shadow-black overflow-hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="promo-modal-title"
+          className="glass-card relative z-10 max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-2xl border border-white/15 p-4 shadow-2xl shadow-black sm:rounded-3xl sm:p-6 md:p-10"
         >
           {/* 关闭按钮 */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-all hover:bg-white/15 active:scale-95 z-20"
+            aria-label="关闭宣传片"
+            className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-[#090B10]/90 text-white transition-all hover:bg-white/15 active:scale-95 sm:right-5 sm:top-5"
           >
             <X className="h-5 w-5" />
           </button>
 
           {/* 顶栏 Scene 标签 */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 pr-12 sm:gap-3">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C5A880]/40 bg-[#C5A880]/15 px-3.5 py-1 text-xs font-mono font-bold text-[#E5D2B8]">
               <IconComponent className="h-3.5 w-3.5 text-[#C5A880]" />
               {current.badge}
@@ -160,7 +180,7 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
 
           {/* 标题 & 副标题 */}
           <div className="mt-4">
-            <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white [text-wrap:balance]">
+            <h3 id="promo-modal-title" className="font-display text-xl font-extrabold text-white [text-wrap:balance] sm:text-3xl">
               {current.title}
             </h3>
             <p className="mt-2 text-sm sm:text-base text-slate-300 [text-wrap:pretty]">
@@ -169,7 +189,7 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
           </div>
 
           {/* 主场景视觉演示 */}
-          <div className="mt-6 rounded-2xl bg-[#06080C] border border-white/10 min-h-[220px] flex items-center justify-center relative overflow-hidden shadow-inner">
+          <div className="relative mt-5 flex min-h-[180px] items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#06080C] shadow-inner sm:mt-6 sm:min-h-[220px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentScene}
@@ -185,33 +205,41 @@ export default function PromoModal({ isOpen, onClose }: PromoModalProps) {
           </div>
 
           {/* 控制条与场景进度指示器 */}
-          <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-6">
+          <div className="mt-5 flex flex-col gap-2 border-t border-white/10 pt-4 sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsPlaying((p) => !p)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-[#C5A880] to-[#E5D2B8] text-slate-950 font-bold transition-all hover:scale-105 shadow-md active:scale-95"
+                aria-label={isPlaying ? "暂停宣传片" : "播放宣传片"}
+                className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-r from-[#C5A880] to-[#E5D2B8] font-bold text-slate-950 shadow-md transition-all hover:scale-105 active:scale-95"
               >
                 {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 fill-current" />}
               </button>
 
               <button
                 onClick={() => setCurrentScene(0)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 text-slate-300 transition-all hover:bg-white/10 active:scale-95"
+                aria-label="从第一幕重新播放"
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 text-slate-300 transition-all hover:bg-white/10 active:scale-95"
               >
                 <RotateCcw className="h-4 w-4" />
               </button>
             </div>
 
             {/* 场景点指示器 */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-2 sm:justify-start">
               {scenes.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentScene(idx)}
-                  className={`h-2.5 rounded-full transition-all ${
-                    currentScene === idx ? "w-8 bg-[#C5A880] shadow-sm shadow-[#C5A880]" : "w-2.5 bg-slate-700 hover:bg-slate-500"
-                  }`}
-                />
+                  aria-label={`切换到第 ${idx + 1} 幕`}
+                  aria-current={currentScene === idx ? "step" : undefined}
+                  className="flex h-11 w-11 items-center justify-center rounded-full"
+                >
+                  <span
+                    className={`h-2.5 rounded-full transition-all ${
+                      currentScene === idx ? "w-8 bg-[#C5A880] shadow-sm shadow-[#C5A880]" : "w-2.5 bg-slate-700 hover:bg-slate-500"
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           </div>

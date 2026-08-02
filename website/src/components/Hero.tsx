@@ -47,7 +47,7 @@ function TrustMetricCard({
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="group relative h-full flex flex-col justify-between rounded-2xl border border-white/5 bg-[#0F121D]/60 p-[18px] backdrop-blur-md transition-all duration-300 hover:-translate-y-[3px] hover:border-[#C5A880]/30 hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.5),0_0_15px_rgba(197,168,128,0.15)] overflow-hidden"
+      className="group relative h-full min-w-0 overflow-hidden rounded-2xl border border-white/5 bg-[#0F121D]/60 p-4 backdrop-blur-md transition-all duration-300 hover:-translate-y-[3px] hover:border-[#C5A880]/30 hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.5),0_0_15px_rgba(197,168,128,0.15)] sm:p-[18px]"
     >
       {/* Hover Mouse Light Tracker (Spotlight) */}
       <div
@@ -63,7 +63,7 @@ function TrustMetricCard({
           <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-white/[0.04] border border-white/10 group-hover:border-[#C5A880]/40 transition-colors">
             <Icon className={`h-4 w-4 shrink-0 ${color} group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(197,168,128,0.5)] transition-all duration-300`} />
           </div>
-          <div className="text-base sm:text-lg font-extrabold text-white tracking-tight font-display">
+          <div className="min-w-0 text-sm font-extrabold tracking-tight text-white sm:text-lg font-display">
             <CountUpNumber value={value} />
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative flex min-h-[90vh] items-center overflow-hidden pt-28 pb-20 bg-[#090B10]">
+    <section className="relative flex min-h-[90vh] items-center overflow-hidden bg-[#090B10] pb-16 pt-24 sm:pb-20 sm:pt-28">
       <PromoModal isOpen={isPromoOpen} onClose={() => setIsPromoOpen(false)} />
 
       {/* 低调克制 Canvas Ambient Background */}
@@ -99,7 +99,7 @@ export default function Hero() {
       <div className="pointer-events-none absolute left-1/4 top-1/4 h-[500px] w-[500px] rounded-full bg-[#111420] blur-[150px]" />
       <div className="pointer-events-none absolute right-1/4 bottom-1/3 h-[450px] w-[450px] rounded-full bg-[#C5A880]/10 blur-[160px]" />
 
-      <div className="container relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+      <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 md:px-12">
         <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
           
           {/* 左侧主视觉区域 (7 栏比例) */}
@@ -109,7 +109,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 py-1 px-3.5 text-xs rounded-full bg-white/[0.04] border border-[#C5A880]/30 text-[#E5D2B8] mb-6 backdrop-blur-md font-medium shadow-sm"
+              className="mb-5 inline-flex max-w-full items-center gap-2 rounded-2xl border border-[#C5A880]/30 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium leading-5 text-[#E5D2B8] shadow-sm backdrop-blur-md sm:mb-6 sm:rounded-full sm:px-3.5 sm:text-xs"
             >
               <span>✦ FadeMemo 1.0 · 全新一代认知重塑与记忆固化系统</span>
             </motion.div>
@@ -119,10 +119,10 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.15] tracking-tight text-white mb-6 [text-wrap:balance]"
+              className="mb-5 font-display text-[2rem] font-black leading-[1.15] tracking-tight text-white [text-wrap:balance] sm:mb-6 sm:text-5xl lg:text-6xl"
             >
-              对抗遗忘，重构认知<br />
-              <span className="bg-gradient-to-r from-[#F5EFE4] via-[#E5D2B8] to-[#C5A880] bg-clip-text text-transparent">
+              对抗遗忘，重构认知
+              <span className="block bg-gradient-to-r from-[#F5EFE4] via-[#E5D2B8] to-[#C5A880] bg-clip-text text-transparent">
                 让每一份知识，转化为终身能力
               </span>
             </motion.h1>
@@ -132,7 +132,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="max-w-xl text-base lg:text-lg text-slate-300 leading-relaxed mb-8 [text-wrap:pretty] font-normal"
+              className="mb-7 max-w-xl text-[15px] font-normal leading-7 text-slate-300 [text-wrap:pretty] sm:mb-8 sm:text-base lg:text-lg lg:leading-relaxed"
             >
               告别“存而不学”的假象。FadeMemo 融合艾宾浩斯记忆遗忘模型与主动提取算法，通过智能侵蚀、选择性挖空与多维重塑，唤醒深层神经记忆，建立高密度的结构化知识库。
             </motion.p>
@@ -142,11 +142,11 @@ export default function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="mb-12 flex flex-wrap items-center gap-4"
+              className="mb-10 flex flex-col items-stretch gap-3 sm:mb-12 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
             >
               <button
                 onClick={() => scrollToSection("download")}
-                className="group relative inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#C5A880] via-[#D4AF37] to-[#E5D2B8] px-7 py-3.5 text-base font-extrabold text-slate-950 shadow-lg shadow-[#C5A880]/20 transition-all duration-200 hover:shadow-[#C5A880]/35 hover:scale-[1.02] active:scale-[0.98]"
+                className="group relative inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#C5A880] via-[#D4AF37] to-[#E5D2B8] px-6 py-3 text-base font-extrabold text-slate-950 shadow-lg shadow-[#C5A880]/20 transition-all duration-200 hover:scale-[1.02] hover:shadow-[#C5A880]/35 active:scale-[0.98] sm:w-auto sm:px-7 sm:py-3.5"
               >
                 <span>免费开启记忆重构</span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -154,7 +154,7 @@ export default function Hero() {
 
               <button
                 onClick={() => setIsPromoOpen(true)}
-                className="group inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-6 py-3.5 text-base font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white/[0.08] hover:border-white/20 active:scale-[0.98]"
+                className="group inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-base font-semibold text-white backdrop-blur-md transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08] active:scale-[0.98] sm:w-auto sm:px-6 sm:py-3.5"
               >
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#C5A880]/20 text-[#E5D2B8] backdrop-blur-md transition-transform group-hover:scale-110">
                   <Play className="h-3 w-3 fill-current ml-0.5" />
@@ -168,7 +168,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-2 gap-4 sm:grid-cols-4 items-stretch pt-6 border-t border-white/10"
+              className="grid grid-cols-2 items-stretch gap-3 border-t border-white/10 pt-5 sm:grid-cols-4 sm:gap-4 sm:pt-6"
             >
               {heroMetrics.map((m) => (
                 <TrustMetricCard
@@ -214,8 +214,8 @@ export default function Hero() {
                 </div>
 
                 {/* 剧场内容区 */}
-                <div className="p-6 space-y-5">
-                  <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                <div className="space-y-4 p-4 sm:space-y-5 sm:p-6">
+                  <div className="flex flex-col items-start gap-3 border-b border-white/5 pb-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <div className="text-[11px] font-bold text-[#E5D2B8] font-mono uppercase tracking-widest flex items-center gap-1.5">
                         <BrainCircuit className="h-3.5 w-3.5 text-[#C5A880]" /> DECAY & RECONSTRUCTION MATRIX
@@ -231,7 +231,7 @@ export default function Hero() {
 
                   {/* 记忆保留强度 进度条 (暗色呼吸微光 + 往复流动光斑) */}
                   <div className="rounded-xl bg-white/[0.03] p-3.5 border border-white/5 space-y-2">
-                    <div className="flex justify-between text-xs text-slate-300 font-semibold">
+                    <div className="flex flex-col gap-1 text-xs font-semibold text-slate-300 sm:flex-row sm:justify-between">
                       <span className="flex items-center gap-1">
                         🧠 大脑神经留存度: <span className="text-[#E5D2B8] font-mono font-bold">45%</span>
                       </span>
@@ -289,10 +289,10 @@ export default function Hero() {
                   </div>
 
                   {/* 底部交互按钮区 */}
-                  <div className="flex items-center justify-between pt-1">
+                  <div className="grid grid-cols-1 gap-2 pt-1 sm:flex sm:items-center sm:justify-between">
                     <button
                       onClick={() => setInteractiveRepaired((r) => !r)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-[#C5A880]/15 border border-[#C5A880]/30 px-4 py-2 text-xs font-bold text-[#E5D2B8] transition-all duration-200 hover:bg-[#C5A880]/25 hover:border-[#E5D2B8] active:scale-95"
+                      className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#C5A880]/30 bg-[#C5A880]/15 px-4 py-2 text-xs font-bold text-[#E5D2B8] transition-all duration-200 hover:border-[#E5D2B8] hover:bg-[#C5A880]/25 active:scale-95 sm:w-auto"
                     >
                       <RefreshCw className={`h-3.5 w-3.5 ${interactiveRepaired ? "rotate-180 transition-transform duration-500" : ""}`} />
                       {interactiveRepaired ? "重置演示" : "点击体验答题修复"}
@@ -301,7 +301,7 @@ export default function Hero() {
                     {/* [ ▷ 播放宣传片 ] 香槟金呼吸外发光高亮按钮 */}
                     <button
                       onClick={() => setIsPromoOpen(true)}
-                      className="relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#C5A880]/20 via-[#D4AF37]/25 to-[#C5A880]/20 border border-[#C5A880]/50 px-4.5 py-2 text-xs font-extrabold text-[#E5D2B8] shadow-[0_0_15px_rgba(197,168,128,0.35)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(197,168,128,0.6)] hover:border-[#E5D2B8] hover:scale-105 active:scale-95 group"
+                      className="group relative inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#C5A880]/50 bg-gradient-to-r from-[#C5A880]/20 via-[#D4AF37]/25 to-[#C5A880]/20 px-4 py-2 text-xs font-extrabold text-[#E5D2B8] shadow-[0_0_15px_rgba(197,168,128,0.35)] transition-all duration-300 hover:scale-105 hover:border-[#E5D2B8] hover:shadow-[0_0_25px_rgba(197,168,128,0.6)] active:scale-95 sm:w-auto"
                     >
                       <span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#C5A880]/30 text-[#E5D2B8] transition-transform group-hover:scale-110">
                         <Play className="h-2.5 w-2.5 fill-current ml-0.5" />
@@ -318,7 +318,7 @@ export default function Hero() {
       </div>
 
       {/* 底部 Scroll Arrow */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+      <div className="absolute bottom-4 left-1/2 z-20 hidden -translate-x-1/2 sm:block">
         <div
           className="flex flex-col items-center gap-1 text-slate-500 cursor-pointer transition-colors hover:text-[#E5D2B8]"
           onClick={() => scrollToSection("features")}
