@@ -80,10 +80,11 @@ class DesktopStatusBar extends StatelessWidget {
     double sum = 0;
 
     for (final c in memo.chars) {
-      final s = ForgettingEngine.computeStrength(
+      final s = ForgettingEngine.effectiveStrength(
+        strength: c.strength,
         importance: c.importance,
         lambda: lambda,
-        createdAt: c.createTime,
+        lastRecall: c.lastRecall,
         now: now,
       );
       sum += s;
@@ -186,7 +187,10 @@ class _StatusDistribution extends StatelessWidget {
         _Dot(color: const Color(0xFF6366F1), count: stats.clear, label: '清晰'),
         _Dot(color: const Color(0xFFB4A66B), count: stats.blurry, label: '模糊'),
         _Dot(color: const Color(0xFFE85D75), count: stats.garbled, label: '错乱'),
-        _Dot(color: const Color(0xFF666666), count: stats.disappeared, label: '消失'),
+        _Dot(
+            color: const Color(0xFF666666),
+            count: stats.disappeared,
+            label: '消失'),
       ],
     );
   }

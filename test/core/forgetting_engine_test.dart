@@ -72,6 +72,20 @@ void main() {
     });
   });
 
+  group('effectiveStrength', () {
+    test('用户动作写入的强度会限制最终显示强度', () {
+      final now = DateTime(2024, 1, 1);
+      final value = ForgettingEngine.effectiveStrength(
+        strength: 0.35,
+        importance: 0.85,
+        lambda: 0.0001,
+        lastRecall: now,
+        now: now,
+      );
+      expect(value, closeTo(0.35, 1e-6));
+    });
+  });
+
   group('computeBeta', () {
     test('β 与 importance 负相关', () {
       expect(ForgettingEngine.computeBeta(1.0), closeTo(0.5, 1e-6));

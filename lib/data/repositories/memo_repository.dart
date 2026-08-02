@@ -30,7 +30,8 @@ class MemoRepository {
   Stream<BoxEvent> watch() => _box.watch();
 
   /// 用纯文本创建新笔记（每个字符绑定 CharState）
-  Future<Memo> create(String text, {String title = '', double? importance}) async {
+  Future<Memo> create(String text,
+      {String title = '', double? importance}) async {
     final now = DateTime.now();
     final imp = importance ?? AppConstants.defaultImportance;
     final memo = Memo(
@@ -47,7 +48,7 @@ class MemoRepository {
   }
 
   /// 用新文本覆盖一条笔记的字符状态（保留原有 id、createdAt、importance）
-  Future<Memo> updateText(Memo memo, String newText) async {
+  Future<Memo> updateText(Memo memo, String newText, {String? title}) async {
     final now = DateTime.now();
     final imp = memo.importance;
     final oldChars = memo.chars;
@@ -79,6 +80,7 @@ class MemoRepository {
     }
 
     final updated = memo.copyWith(
+      title: title,
       rawContent: newText,
       chars: newChars,
       updatedAt: now,
@@ -119,7 +121,8 @@ class MemoRepository {
   Future<Memo> accelerate(Memo memo) async {
     final newChars = memo.chars
         .map((c) => c.copyWith(
-              strength: (c.strength * AppConstants.accelerateFactor).clamp(0.0, 1.0),
+              strength:
+                  (c.strength * AppConstants.accelerateFactor).clamp(0.0, 1.0),
             ))
         .toList(growable: false);
     final updated = memo.copyWith(

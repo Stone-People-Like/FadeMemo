@@ -17,7 +17,7 @@ class FadeMemoApp extends StatelessWidget {
     final mode = settingsModel.settings.themeMode;
 
     return MaterialApp(
-      title: 'FadeMemo · 记忆遗忘模拟器',
+      title: 'FadeMemo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
