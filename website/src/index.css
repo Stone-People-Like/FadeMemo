@@ -14,6 +14,7 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
   }
 
   body {
@@ -24,11 +25,128 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   ::selection {
     background-color: rgba(197, 168, 128, 0.25);
     color: #E5D2B8;
+  }
+}
+
+@media (max-width: 767px) {
+  main > section:not(:first-child) {
+    padding-block: 4rem;
+  }
+
+  section[id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  header {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  header nav > button,
+  header ul button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  #platforms > .container > .grid,
+  #download .pt-8.grid {
+    gap: 0.75rem;
+  }
+
+  #download footer > div:first-child > div:nth-child(2) {
+    display: grid;
+    width: 100%;
+    max-width: 32rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  #download footer > div:first-child > div:nth-child(2) > a,
+  #download footer > div:first-child > div:nth-child(2) > button {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 0.5rem;
+    text-align: center;
+  }
+
+  #download footer > div:last-child {
+    max-width: 100%;
+    padding-inline: 1rem;
+    overflow-wrap: anywhere;
+    line-height: 1.75;
+  }
+
+  #download a[href*="github.com"] {
+    width: 100%;
+    justify-content: center;
+    padding-inline: 1rem;
+  }
+
+}
+
+@media (max-width: 359px) {
+  #download h2 {
+    font-size: 1.875rem;
+    line-height: 1.16;
+  }
+
+  #download footer > div:first-child > div:nth-child(2) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #platforms > .container > .grid,
+  #download .pt-8.grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #platforms > .container > .grid > div > div,
+  #download .pt-8.grid a > div {
+    min-height: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    text-align: left;
+  }
+
+  #platforms > .container > .grid > div > div > div:first-child,
+  #download .pt-8.grid a > div > div:first-child {
+    margin-bottom: 0;
+  }
+
+  #platforms > .container > .grid > div > div > p,
+  #download .pt-8.grid a > div > div:last-child,
+  #download .pt-8.grid a > div > div:last-child > div {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+@media (hover: none) {
+  .glass-card-hover:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
