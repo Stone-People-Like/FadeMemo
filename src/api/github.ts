@@ -139,6 +139,16 @@ async function optional<T>(
   }
 }
 
+async function optionalComparison(label: string, task: Promise<RawComparison>, failures: string[]): Promise<RawComparison | null> {
+  try {
+    return await task;
+  } catch (error) {
+    if (error instanceof GitHubApiError && error.status === 404 && /no common ancestor/i.test(error.message)) return null;
+    failures.push(error instanceof Error ? `${label}：${error.message}` : `${label}：读取失败`);
+    return null;
+  }
+}
+
 function decodeContent(content?: string): string {
   if (!content) return "";
   const bytes = Uint8Array.from(atob(content.replace(/\n/g, "")), (character) =>
@@ -284,11 +294,10 @@ export async function fetchDashboardData(force = false): Promise<DashboardData> 
       commits.forEach((commit) => mergeBranchCommit(commitMap, mapCommit(commit, branch.name), branch.name));
       branch.updatedAt = commits[0]?.commit.author?.date || commits[0]?.commit.committer?.date;
       if (branch.name === repository.defaultBranch) return;
-      const comparison = await optional(
+      const comparison = await optionalComparison(
         `${branch.name} 分支差异`,
         request<RawComparison>(`/repos/${OWNER}/${REPO}/compare/${encodeURIComponent(repository.defaultBranch)}...${encodeURIComponent(branch.name)}`, force),
         failures,
-        null,
       );
       if (comparison) {
         branch.ahead = comparison.ahead_by;
