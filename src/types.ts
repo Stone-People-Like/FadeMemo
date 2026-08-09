@@ -82,6 +82,7 @@ export interface BranchGraph {
 }
 
 export interface RoadmapItem {
+  id?: string;
   label: string;
   completed: boolean;
 }
@@ -92,6 +93,7 @@ export interface RoadmapPhase {
   goal?: string;
   items: RoadmapItem[];
   source: string;
+  editedAt?: string;
 }
 
 export interface Suggestion {

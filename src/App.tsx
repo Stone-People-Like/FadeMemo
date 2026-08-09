@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -15,12 +15,16 @@ import {
   ListChecks,
   Menu,
   MessageSquareCode,
+  Moon,
   Network,
+  Plus,
   GitPullRequest,
   RefreshCw,
   RotateCcw,
   Sparkle,
   Star,
+  Sun,
+  Trash2,
   Users,
   X,
 } from "lucide-react";
@@ -32,6 +36,8 @@ import {
   roadmapProgress,
   scoreContributorsForWindow,
 } from "./lib/analytics";
+import { normalizeSyncMinutes, resolveInitialTheme, syncIntervalOptions, type SyncMinutes, type ThemePreference } from "./lib/preferences";
+import { mergeRoadmapOverride, parseRoadmapOverride, updateRoadmap, type RoadmapEditAction, type RoadmapOverride } from "./lib/roadmap-editor";
 import type {
   CommitNode,
   ContributorMetric,
@@ -42,6 +48,10 @@ import type {
 } from "./types";
 
 type View = "overview" | "contributors" | "branches" | "roadmap" | "suggestions";
+
+const THEME_KEY = "fadememo-dashboard:theme";
+const SYNC_KEY = "fadememo-dashboard:sync-minutes";
+const ROADMAP_KEY = "fadememo-dashboard:roadmap-override";
 
 const NAVIGATION: Array<{ id: View; label: string; icon: typeof Activity }> = [
   { id: "overview", label: "总览", icon: Activity },
@@ -103,30 +113,64 @@ export default function App() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [syncWarning, setSyncWarning] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.matchMedia("(max-width: 980px)").matches);
+  const [theme, setTheme] = useState<ThemePreference>(() => resolveInitialTheme(localStorage.getItem(THEME_KEY), window.matchMedia("(prefers-color-scheme: dark)").matches));
+  const [syncMinutes, setSyncMinutes] = useState<SyncMinutes>(() => normalizeSyncMinutes(localStorage.getItem(SYNC_KEY)));
+  const [roadmapOverride, setRoadmapOverride] = useState<RoadmapOverride | null>(() => parseRoadmapOverride(localStorage.getItem(ROADMAP_KEY)));
   const sidebarRef = useRef<HTMLElement>(null);
-  const queryFixture = new URLSearchParams(window.location.search).get("demo") === "1";
+  const syncInFlight = useRef(false);
+  const dataRef = useRef<DashboardData | null>(null);
+  const demoMode = new URLSearchParams(window.location.search).get("demo") === "1";
 
-  const load = async (force = false, fixture = false) => {
-    setLoading(true);
-    setError(null);
+  const load = useCallback(async (force = false, background = false) => {
+    if (syncInFlight.current) return;
+    syncInFlight.current = true;
+    if (!background) {
+      setLoading(true);
+      setError(null);
+    }
     try {
-      setData(fixture ? getFixtureData() : await fetchDashboardData(force));
+      const next = demoMode ? getFixtureData() : await fetchDashboardData(force);
+      dataRef.current = next;
+      setData(next);
+      setError(null);
+      setSyncWarning(null);
     } catch (caught) {
       const message = caught instanceof GitHubApiError && caught.status === 403
-        ? "GitHub 公共 API 已达到当前限额。可以切换到示例数据，或稍后刷新。"
+        ? "GitHub 公共 API 已达到当前限额，请稍后同步。"
         : caught instanceof Error ? caught.message : "无法读取 GitHub 数据。";
-      setError(message);
-      setData(null);
+      if (background && dataRef.current) setSyncWarning(message);
+      else {
+        dataRef.current = null;
+        setError(message);
+        setData(null);
+      }
     } finally {
-      setLoading(false);
+      syncInFlight.current = false;
+      if (!background) setLoading(false);
     }
-  };
+  }, [demoMode]);
 
   useEffect(() => {
-    void load(false, queryFixture);
-  }, [queryFixture]);
+    void load(false);
+  }, [load]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem(SYNC_KEY, String(syncMinutes));
+    if (demoMode) return;
+    const timer = window.setInterval(() => {
+      const remaining = dataRef.current?.status.remaining;
+      if (document.visibilityState === "visible" && (remaining === null || remaining === undefined || remaining >= 20)) void load(false, true);
+    }, syncMinutes * 60_000);
+    return () => window.clearInterval(timer);
+  }, [demoMode, load, syncMinutes]);
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 980px)");
@@ -141,6 +185,15 @@ export default function App() {
   }, [isMobile, mobileNavOpen]);
 
   const activeNavigation = NAVIGATION.find((item) => item.id === view)!;
+  const visibleData = useMemo(() => data ? { ...data, roadmap: mergeRoadmapOverride(data.roadmap, roadmapOverride) } : data, [data, roadmapOverride]);
+  const saveRoadmapOverride = (override: RoadmapOverride) => {
+    localStorage.setItem(ROADMAP_KEY, JSON.stringify(override));
+    setRoadmapOverride(override);
+  };
+  const restoreRoadmap = () => {
+    localStorage.removeItem(ROADMAP_KEY);
+    setRoadmapOverride(null);
+  };
 
   return (
     <div className="app-shell">
@@ -172,9 +225,9 @@ export default function App() {
           })}
         </nav>
         <div className="sidebar-foot">
-          <span className={`source-dot ${data?.status.source === "live" ? "is-live" : ""}`} />
+          <span className={`source-dot ${!demoMode ? "is-live" : ""}`} />
           <div>
-            <strong>{data?.status.source === "live" ? "GitHub 实时数据" : "示例数据"}</strong>
+            <strong>{demoMode ? "示例数据" : "GitHub 实时数据"}</strong>
             <span>{data ? `更新于 ${new Date(data.status.fetchedAt).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}` : "等待数据"}</span>
           </div>
         </div>
@@ -188,31 +241,37 @@ export default function App() {
             <span>{activeNavigation.label}</span>
           </div>
           <div className="topbar-actions">
+            {syncWarning ? <span className="sync-warning" title={syncWarning}><AlertTriangle size={13} />同步延迟</span> : null}
             {data?.status.remaining !== null && data?.status.remaining !== undefined ? (
               <span className="rate-limit mono">API {data.status.remaining}/{data.status.limit ?? "—"}</span>
             ) : null}
-            <button className="quiet-button" type="button" onClick={() => void load(false, data?.status.source !== "fixture")}>
-              <RotateCcw size={15} />
-              {data?.status.source === "fixture" ? "返回实时" : "示例数据"}
+            <label className="sync-settings">
+              <span>自动同步</span>
+              <select aria-label="自动同步间隔" value={syncMinutes} onChange={(event) => setSyncMinutes(normalizeSyncMinutes(event.target.value))} disabled={demoMode}>
+                {syncIntervalOptions.map((minutes) => <option key={minutes} value={minutes}>{minutes} 分钟</option>)}
+              </select>
+            </label>
+            <button className="icon-button" type="button" onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")} aria-label={theme === "dark" ? "切换到浅色主题" : "切换到深色主题"}>
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
-            <button className="primary-button" type="button" onClick={() => void load(true, data?.status.source === "fixture")} disabled={loading}>
+            <button className="primary-button" type="button" onClick={() => void load(true)} disabled={loading}>
               <RefreshCw size={15} className={loading ? "is-spinning" : ""} />
-              刷新
+              {demoMode ? "刷新示例" : "同步"}
             </button>
           </div>
         </header>
 
         <div className="page-content">
           {loading ? <LoadingState /> : null}
-          {!loading && error ? <ErrorState message={error} onFixture={() => void load(false, true)} onRetry={() => void load(true, false)} /> : null}
-          {!loading && data ? (
+          {!loading && error ? <ErrorState message={error} onRetry={() => void load(true)} /> : null}
+          {!loading && visibleData ? (
             <>
-              {data.status.partialFailures.length > 0 ? <PartialDataNotice failures={data.status.partialFailures} /> : null}
-              {view === "overview" ? <Overview data={data} onNavigate={setView} /> : null}
-              {view === "contributors" ? <ContributorsView data={data} /> : null}
-              {view === "branches" ? <BranchesView data={data} /> : null}
-              {view === "roadmap" ? <RoadmapView phases={data.roadmap} /> : null}
-              {view === "suggestions" ? <SuggestionsView suggestions={data.suggestions} /> : null}
+              {visibleData.status.partialFailures.length > 0 ? <PartialDataNotice failures={visibleData.status.partialFailures} /> : null}
+              {view === "overview" ? <Overview data={visibleData} onNavigate={setView} /> : null}
+              {view === "contributors" ? <ContributorsView data={visibleData} /> : null}
+              {view === "branches" ? <BranchesView data={visibleData} /> : null}
+              {view === "roadmap" ? <RoadmapView repositoryPhases={data?.roadmap ?? []} override={roadmapOverride} onChange={saveRoadmapOverride} onRestore={restoreRoadmap} /> : null}
+              {view === "suggestions" ? <SuggestionsView suggestions={visibleData.suggestions} /> : null}
             </>
           ) : null}
         </div>
@@ -233,14 +292,14 @@ function LoadingState() {
   );
 }
 
-function ErrorState({ message, onFixture, onRetry }: { message: string; onFixture: () => void; onRetry: () => void }) {
+function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
     <section className="error-state" role="alert">
       <AlertTriangle size={24} />
       <p className="eyebrow">DATA INTERRUPTED</p>
       <h1>项目轨迹暂时不可读</h1>
       <p>{message}</p>
-      <div><button className="primary-button" type="button" onClick={onRetry}>重试实时数据</button><button className="quiet-button" type="button" onClick={onFixture}>查看示例数据</button></div>
+      <div><button className="primary-button" type="button" onClick={onRetry}>重新同步</button></div>
     </section>
   );
 }
@@ -299,7 +358,7 @@ function Overview({ data, onNavigate }: { data: DashboardData; onNavigate: (view
           <div className="activity-chart" aria-label="最近提交活动">
             {activity.length ? activity.map(([date, count]) => (
               <div key={date} className="activity-day">
-                <span style={{ height: `${Math.max(8, (count / activityMax) * 100)}%` }} />
+                <div className="activity-column"><b className="mono">{count}</b><span style={{ height: `${Math.max(8, (count / activityMax) * 100)}%` }} /></div>
                 <small>{date.slice(5)}</small>
               </div>
             )) : <div className="empty-inline">暂无提交活动数据</div>}
@@ -520,12 +579,31 @@ function CommitDrawer({ commit, loading, onClose }: { commit: CommitNode; loadin
   );
 }
 
-function RoadmapView({ phases }: { phases: RoadmapPhase[] }) {
+function RoadmapView({ repositoryPhases, override, onChange, onRestore }: { repositoryPhases: RoadmapPhase[]; override: RoadmapOverride | null; onChange: (override: RoadmapOverride) => void; onRestore: () => void }) {
+  const phases = useMemo(() => mergeRoadmapOverride(repositoryPhases, override), [repositoryPhases, override]);
+  const [editing, setEditing] = useState(false);
+  const hasLocalOverride = override !== null;
+  const edit = (action: RoadmapEditAction) => {
+    const deletedPhaseIds = new Set(override?.deletedPhaseIds ?? []);
+    if (action.type === "remove-phase" && repositoryPhases.some((phase) => phase.id === action.phaseId)) deletedPhaseIds.add(action.phaseId);
+    onChange({ phases: updateRoadmap(phases, action), deletedPhaseIds: [...deletedPhaseIds] });
+  };
+  const restore = () => {
+    onRestore();
+    setEditing(false);
+  };
   const totalProgress = roadmapProgress(phases);
   return (
     <div className="view-stack">
-      <PageHeading eyebrow="PROJECT MILESTONES" title="阶段目标与完成刻度" description="目标来自仓库文档与 GitHub Milestones，并用关联 Issue / PR 状态补充活动。" />
-      <section className="roadmap-overview"><div><span>总体检查项进度</span><strong className="mono">{totalProgress}%</strong></div><div className="progress-track"><span style={{ width: `${totalProgress}%` }} /></div><small>来源：README、CHANGELOG、产品概念报告、GitHub Milestones</small></section>
+      <div className="roadmap-heading-row">
+        <PageHeading eyebrow="PROJECT MILESTONES" title="阶段目标与完成刻度" description="目标来自仓库文档与 GitHub Milestones；本地编辑会覆盖解析结果，但不会修改 GitHub 文件。" />
+        <div className="roadmap-actions">
+          {hasLocalOverride ? <button className="quiet-button" type="button" onClick={restore}><RotateCcw size={15} />恢复仓库结果</button> : null}
+          <button className={editing ? "primary-button" : "quiet-button"} type="button" aria-pressed={editing} onClick={() => setEditing((current) => !current)}>{editing ? "完成编辑" : "编辑目标"}</button>
+        </div>
+      </div>
+      <section className="roadmap-overview"><div><span>总体检查项进度</span><strong className="mono">{totalProgress}%</strong></div><div className="progress-track"><span style={{ width: `${totalProgress}%` }} /></div><small>{hasLocalOverride ? "本地覆盖已启用 · 自动保存在此浏览器" : "来源：README、CHANGELOG、产品概念报告、GitHub Milestones"}</small></section>
+      {editing ? <button className="add-phase-button" type="button" onClick={() => edit({ type: "add-phase" })}><Plus size={16} />新增阶段</button> : null}
       <div className="roadmap-timeline">
         {phases.map((phase, index) => {
           const completed = phase.items.filter((item) => item.completed).length;
@@ -533,7 +611,20 @@ function RoadmapView({ phases }: { phases: RoadmapPhase[] }) {
           return (
             <article className="phase-card" key={phase.id}>
               <div className="phase-index mono">{String(index + 1).padStart(2, "0")}</div>
-              <div className="phase-body"><header><div><span>{phase.source}</span><h2>{phase.title}</h2><p>{phase.goal || "以仓库检查项作为阶段完成标准。"}</p></div><strong className="mono">{phase.items.length ? `${progress}%` : "—"}</strong></header><div className="phase-items">{phase.items.length ? phase.items.map((item) => <div key={item.label} className={item.completed ? "is-complete" : ""}><span>{item.completed ? <Check size={13} /> : null}</span><p>{item.label}</p></div>) : <div className="empty-inline">该来源未提供可计算的检查项。</div>}</div></div>
+              <div className="phase-body">
+                <header>
+                  <div><span>{phase.editedAt ? "本地编辑" : phase.source}</span>{editing ? <><input className="phase-title-input" aria-label={`阶段 ${index + 1} 标题`} value={phase.title} onChange={(event) => edit({ type: "update-phase", phaseId: phase.id, title: event.target.value, goal: phase.goal ?? "" })} /><textarea aria-label={`阶段 ${index + 1} 目标`} value={phase.goal ?? ""} placeholder="阶段目标" onChange={(event) => edit({ type: "update-phase", phaseId: phase.id, title: phase.title, goal: event.target.value })} /></> : <><h2>{phase.title}</h2><p>{phase.goal || "以仓库检查项作为阶段完成标准。"}</p></>}</div>
+                  <strong className="mono">{phase.items.length ? `${progress}%` : "—"}</strong>
+                </header>
+                <div className={`phase-items ${editing ? "is-editing" : ""}`}>
+                  {phase.items.length ? phase.items.map((item, itemIndex) => {
+                    const itemId = item.id ?? `${phase.id}-item-${itemIndex}`;
+                    return editing ? <div className="editable-roadmap-item" key={itemId}><input type="checkbox" checked={item.completed} aria-label={`切换 ${item.label} 完成状态`} onChange={(event) => edit({ type: "update-item", phaseId: phase.id, itemId, label: item.label, completed: event.target.checked })} /><input value={item.label} aria-label={`检查项 ${itemIndex + 1}`} onChange={(event) => edit({ type: "update-item", phaseId: phase.id, itemId, label: event.target.value, completed: item.completed })} /><button type="button" onClick={() => edit({ type: "remove-item", phaseId: phase.id, itemId })} aria-label={`删除检查项 ${item.label}`}><Trash2 size={14} /></button></div> : <div key={itemId} className={item.completed ? "is-complete" : ""}><span>{item.completed ? <Check size={13} /> : null}</span><p>{item.label}</p></div>;
+                  }) : !editing ? <div className="empty-inline">该来源未提供可计算的检查项。</div> : null}
+                  {editing ? <button className="add-item-button" type="button" onClick={() => edit({ type: "add-item", phaseId: phase.id, label: "新检查项" })}><Plus size={14} />添加检查项</button> : null}
+                </div>
+                {editing ? <button className="delete-phase-button" type="button" onClick={() => edit({ type: "remove-phase", phaseId: phase.id })}><Trash2 size={14} />删除阶段</button> : null}
+              </div>
             </article>
           );
         })}

@@ -3,7 +3,7 @@ import { Focus, Minus, Plus } from "lucide-react";
 import { buildBranchGraph, nodeBySha } from "../lib/analytics";
 import type { BranchRef, CommitNode } from "../types";
 
-const LANE_COLORS = ["#c7a86b", "#6da69a", "#a38bb8", "#b77f71", "#7f97b3", "#9da46f", "#af8d5d", "#7ca1a8"];
+const LANE_COLORS = ["var(--lane-0)", "var(--lane-1)", "var(--lane-2)", "var(--lane-3)", "var(--lane-4)", "var(--lane-5)", "var(--lane-6)", "var(--lane-7)"];
 const ROW_HEIGHT = 64;
 const LANE_WIDTH = 34;
 const GRAPH_LEFT = 38;
@@ -123,10 +123,10 @@ export function BranchGraphView({ commits, branches, branchOrder, onSelect, sele
                     }}
                   >
                     <rect x="18" y={y - 25} width={width - 40} height="50" rx="5" fill="transparent" />
-                    <circle cx={x} cy={y} r={node.parents.length > 1 ? 7 : 5.5} fill="#111315" stroke={color} strokeWidth={selectedSha === node.sha ? 3 : 2} opacity={node.emphasis} />
+                    <circle cx={x} cy={y} r={node.parents.length > 1 ? 7 : 5.5} fill="var(--surface-1)" stroke={color} strokeWidth={selectedSha === node.sha ? 3 : 2} opacity={node.emphasis} />
                     {tip ? (
                       <g transform={`translate(${x + 14} ${y - 13})`}>
-                        <rect width={Math.max(70, tip.name.length * 7.4 + 22)} height="26" rx="5" fill="#1b1c1f" stroke={color} strokeOpacity="0.7" />
+                        <rect width={Math.max(70, tip.name.length * 7.4 + 22)} height="26" rx="5" fill="var(--surface-3)" stroke={color} strokeOpacity="0.7" />
                         <text x="10" y="17" className="svg-branch-label" fill={color}>{tip.name}</text>
                       </g>
                     ) : null}
