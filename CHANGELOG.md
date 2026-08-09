@@ -7,15 +7,32 @@
 
 ---
 
-## [Unreleased]
+## [0.0.1-alpha.4] - 2026-08-08 · 官网商业级视觉改版与 Windows 首屏完善
 
-### Changed
+> 🌐 官网全面升级为商业级 UI 质感与极简微交互，新增遗忘沙盒、宣传片弹窗等互动组件；Windows 首屏重构并支持安装包生成；Android 品牌图标与设计规范同步落地。仍为 alpha 预览，不建议生产环境使用。
 
-- 更新 Android 启动图标为新的 FadeMemo 品牌图形，并补齐各屏幕密度的 launcher 资源。
+### 🌐 官网（website/）
 
-### Documentation
+- Landing page 商业级 UI 重构：Hero / Features / Preview / Platforms / About / CTA / Navbar 全部重做
+- 新增遗忘沙盒（DecaySandbox）互动演示
+- 新增宣传片弹窗（PromoModal）
+- 新增微交互组件：粒子爆发、数字滚动、文字打乱、3D 倾斜卡片、Hero 背景画布、FadeMemo 品牌 Logo
+- 优化移动端布局适配
+- 支持 `/fadememo/` 子路径部署
+- 修复矮屏设备宣传片弹窗关闭入口不可见
 
-- 新增 Android UI 设计规范，明确主题、组件、响应式布局、实现范围与无障碍交付要求。
+### 🖥️ Windows 桌面端
+
+- 按确认稿重构桌面首屏：记忆列表、提示词、完整度统计、遗忘速度调节
+- 新建、编辑、删除、回忆擦亮、加速失忆、恢复记忆、昼夜主题均可在首屏完成
+- 标题与正文支持本地自动保存
+- 修复用户记忆动作写入的字符强度未参与实际渲染的问题
+- 新增 Inno Setup 安装脚本，可生成带快捷方式和卸载入口的 Windows 安装程序
+
+### 🤖 Android
+
+- 更新启动图标为新的 FadeMemo 品牌图形，补齐各屏幕密度 launcher 资源
+- 新增 Android UI 设计规范（主题、组件、响应式布局、无障碍交付要求）
 
 ---
 
