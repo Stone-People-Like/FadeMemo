@@ -20,6 +20,15 @@
 
 ---
 
+## 🔗 在线访问
+
+| 项目 | 地址 |
+| :--- | :--- |
+| 官网 | [https://www.mylyq.icu/fadememo/](https://www.mylyq.icu/fadememo/) |
+| GitHub 数据看板 | [https://www.mylyq.icu/fadememo-dashboard/](https://www.mylyq.icu/fadememo-dashboard/) |
+
+---
+
 ## 💡 一句话说清楚
 
 你记下来的内容会**随着时间慢慢"坏掉"**：字会消失、数字会变错、句子会变得模糊不清。
