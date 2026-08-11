@@ -1,5 +1,9 @@
 # FadeMemo · 记·忘
 
+<p align="center">
+  <img src="./assets/logo.png" width="120" height="120" alt="FadeMemo Logo" />
+</p>
+
 > 一份越不回顾就越模糊的笔记。
 >
 > 这不是一个笔记工具——这是一个披着笔记外衣的学习工具。
@@ -353,7 +357,7 @@ FadeMemo/
 │       └── desktop/
 ├── backend/                      # Go 损坏引擎（规划中）
 │   └── engine/                   # 遗忘曲线、损坏策略、评分
-├── assets/                       # logo.svg
+├── assets/                       # logo.svg / logo.png / app_icon.png
 ├── test/                         # 单元测试
 ├── website/                      # 产品官网（Vite + React）
 ├── 记·忘_产品概念报告.md          # 完整产品概念文档
