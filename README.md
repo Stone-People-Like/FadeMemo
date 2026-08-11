@@ -1,7 +1,7 @@
 # FadeMemo · 记·忘
 
 <p align="center">
-  <img src="./assets/logo.png" width="120" height="120" alt="FadeMemo Logo" />
+  <img src="./assets/logo.svg" width="120" height="120" alt="FadeMemo Logo" />
 </p>
 
 > 一份越不回顾就越模糊的笔记。
