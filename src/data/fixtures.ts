@@ -84,16 +84,18 @@ const commits = [
 ];
 
 const pulls = [
-  { number: 19, title: "发布 v0.0.1-alpha.4 准备", user: "guhuihe12", state: "closed" as const, mergedAt: "2026-08-09T03:09:40Z", createdAt: "2026-08-09", updatedAt: "2026-08-09", htmlUrl: "https://github.com/Stone-People-Like/FadeMemo/pull/19", reviewers: ["xaopengyo-1010"], reviewsLoaded: true },
-  { number: 16, title: "修复矮屏宣传片弹窗关闭入口不可见", user: "xaopengyo-1010", state: "closed" as const, mergedAt: "2026-08-02T07:59:26Z", createdAt: "2026-08-02", updatedAt: "2026-08-02", htmlUrl: "https://github.com/Stone-People-Like/FadeMemo/pull/16", reviewers: [], reviewsLoaded: true },
+  { number: 19, title: "发布 v0.0.1-alpha.4 准备", body: "整理版本号、变更日志和发布前检查项。", user: "guhuihe12", state: "closed" as const, mergedAt: "2026-08-09T03:09:40Z", createdAt: "2026-08-09", updatedAt: "2026-08-09", htmlUrl: "https://github.com/Stone-People-Like/FadeMemo/pull/19", reviewers: ["xaopengyo-1010"], reviewsLoaded: true },
+  { number: 16, title: "修复矮屏宣传片弹窗关闭入口不可见", body: "保证短屏设备滚动后仍可访问关闭按钮。", user: "xaopengyo-1010", state: "closed" as const, mergedAt: "2026-08-02T07:59:26Z", createdAt: "2026-08-02", updatedAt: "2026-08-02", htmlUrl: "https://github.com/Stone-People-Like/FadeMemo/pull/16", reviewers: [], reviewsLoaded: true },
 ];
 
 const issues = Array.from({ length: 9 }, (_, index) => ({
   number: 20 + index,
   title: ["补齐 Go 损坏引擎", "信息填空模式", "错误检测模式", "发布流程自动化"][index % 4],
+  body: ["补齐后端损坏等级与恢复逻辑。", "完善信息填空挑战的交互闭环。", "增加错误检测模式与结果反馈。", "整理自动发布和版本校验流程。"][index % 4],
+  user: ["guhuihe12", "xaopengyo-1010", "stone-people-bot"][index % 3],
   state: index < 7 ? "open" as const : "closed" as const,
   createdAt: `2026-07-${String(20 + index).padStart(2, "0")}`,
-  updatedAt: `2026-08-${String(1 + index).padStart(2, "0")}`,
+  updatedAt: index === 0 ? "2026-08-11T17:35:30Z" : `2026-08-${String(1 + index).padStart(2, "0")}`,
   htmlUrl: `https://github.com/Stone-People-Like/FadeMemo/issues/${20 + index}`,
 }));
 

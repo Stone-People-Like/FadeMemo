@@ -9,7 +9,6 @@ import {
   CircleDot,
   Code2,
   GitBranch,
-  GitCommitHorizontal,
   GitFork,
   Lightbulb,
   ListChecks,
@@ -33,10 +32,13 @@ import { BranchGraphView } from "./components/BranchGraph";
 import { getFixtureData } from "./data/fixtures";
 import {
   buildBranchGraph,
+  latestRepositoryActivity,
+  recentCommitActivity,
   roadmapProgress,
   scoreContributorsForWindow,
 } from "./lib/analytics";
 import { normalizeSyncMinutes, resolveInitialTheme, syncIntervalOptions, type SyncMinutes, type ThemePreference } from "./lib/preferences";
+import { calendarDayDistance } from "./lib/dates";
 import { mergeRoadmapOverride, parseRoadmapOverride, updateRoadmap, type RoadmapEditAction, type RoadmapOverride } from "./lib/roadmap-editor";
 import type {
   CommitNode,
@@ -44,10 +46,12 @@ import type {
   DashboardData,
   DateRange,
   RoadmapPhase,
+  IssueSummary,
+  PullRequestSummary,
   Suggestion,
 } from "./types";
 
-type View = "overview" | "contributors" | "branches" | "roadmap" | "suggestions";
+type View = "overview" | "contributors" | "branches" | "issues" | "pulls" | "roadmap" | "suggestions";
 
 const THEME_KEY = "fadememo-dashboard:theme";
 const SYNC_KEY = "fadememo-dashboard:sync-minutes";
@@ -57,6 +61,8 @@ const NAVIGATION: Array<{ id: View; label: string; icon: typeof Activity }> = [
   { id: "overview", label: "总览", icon: Activity },
   { id: "contributors", label: "贡献者", icon: Users },
   { id: "branches", label: "分支图", icon: Network },
+  { id: "issues", label: "Issues", icon: CircleDot },
+  { id: "pulls", label: "Pull Requests", icon: GitPullRequest },
   { id: "roadmap", label: "阶段目标", icon: ListChecks },
   { id: "suggestions", label: "建议", icon: Lightbulb },
 ];
@@ -70,9 +76,13 @@ function formatDate(value?: string): string {
   return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "short", day: "numeric" }).format(new Date(value));
 }
 
+function formatDateTime(value: string): string {
+  return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+}
+
 function relativeDate(value?: string): string {
   if (!value) return "未知";
-  const days = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 86_400_000));
+  const days = calendarDayDistance(value);
   if (days === 0) return "今天";
   if (days === 1) return "昨天";
   if (days < 30) return `${days} 天前`;
@@ -199,7 +209,7 @@ export default function App() {
     <div className="app-shell">
       <aside ref={sidebarRef} className={`sidebar ${mobileNavOpen ? "is-open" : ""}`} aria-hidden={isMobile && !mobileNavOpen}>
         <div className="brand-lockup">
-          <span className="brand-mark" aria-hidden="true"><GitCommitHorizontal size={18} /></span>
+          <span className="brand-mark" aria-hidden="true"><img src="/assets/app_icon.png" alt="" /></span>
           <div>
             <strong>FadeMemo</strong>
             <span>PROJECT TRACE</span>
@@ -219,7 +229,9 @@ export default function App() {
               >
                 <Icon size={17} />
                 <span>{item.label}</span>
-                {item.id === "branches" && data ? <small>{data.branches.length}</small> : null}
+                {data && item.id === "branches" ? <small>{data.branches.length}</small> : null}
+                {data && item.id === "issues" ? <small>{data.status.availability.issues ? data.issues.filter((issue) => issue.state === "open").length : "—"}</small> : null}
+                {data && item.id === "pulls" ? <small>{data.status.availability.pulls ? data.pulls.filter((pull) => pull.state === "open").length : "—"}</small> : null}
               </button>
             );
           })}
@@ -270,6 +282,8 @@ export default function App() {
               {view === "overview" ? <Overview data={visibleData} onNavigate={setView} /> : null}
               {view === "contributors" ? <ContributorsView data={visibleData} /> : null}
               {view === "branches" ? <BranchesView data={visibleData} /> : null}
+              {view === "issues" ? <WorkItemsView data={visibleData} kind="issues" /> : null}
+              {view === "pulls" ? <WorkItemsView data={visibleData} kind="pulls" /> : null}
               {view === "roadmap" ? <RoadmapView repositoryPhases={data?.roadmap ?? []} override={roadmapOverride} onChange={saveRoadmapOverride} onRestore={restoreRoadmap} /> : null}
               {view === "suggestions" ? <SuggestionsView suggestions={visibleData.suggestions} /> : null}
             </>
@@ -316,15 +330,14 @@ function PartialDataNotice({ failures }: { failures: string[] }) {
 function Overview({ data, onNavigate }: { data: DashboardData; onNavigate: (view: View) => void }) {
   const progress = roadmapProgress(data.roadmap);
   const openPulls = data.status.availability.pulls ? data.pulls.filter((pull) => pull.state === "open").length : "不可用";
+  const latestActivity = latestRepositoryActivity({
+    repositoryUpdatedAt: data.repository.updatedAt,
+    commits: data.commits,
+    pulls: data.pulls,
+    issues: data.issues,
+  });
   const graph = buildBranchGraph(data.commits, data.branches);
-  const activity = useMemo(() => {
-    const counts = new Map<string, number>();
-    data.commits.forEach((commit) => {
-      const day = commit.date.slice(0, 10);
-      counts.set(day, (counts.get(day) ?? 0) + 1);
-    });
-    return [...counts.entries()].sort(([a], [b]) => a.localeCompare(b)).slice(-14);
-  }, [data.commits]);
+  const activity = useMemo(() => recentCommitActivity(data.commits), [data.commits]);
   const activityMax = Math.max(1, ...activity.map(([, count]) => count));
 
   return (
@@ -340,14 +353,14 @@ function Overview({ data, onNavigate }: { data: DashboardData; onNavigate: (view
           <Star size={20} />
           <strong className="mono">{formatNumber(data.repository.stars)}</strong>
           <span>GitHub Stars</span>
-          <small>最后活动 {relativeDate(data.repository.updatedAt)}</small>
+          <small>最后活动 {relativeDate(latestActivity)}</small>
         </div>
       </section>
 
       <section className="metric-rail" aria-label="项目指标">
         <Metric icon={GitFork} label="Forks" value={data.repository.forks} />
-        <Metric icon={CircleDot} label="Open issues" value={data.repository.openIssues} />
-        <Metric icon={GitPullRequest} label="Open PR" value={openPulls} />
+        <Metric icon={CircleDot} label="Open issues" value={data.repository.openIssues} onClick={() => onNavigate("issues")} />
+        <Metric icon={GitPullRequest} label="Open PR" value={openPulls} onClick={() => onNavigate("pulls")} />
         <Metric icon={GitBranch} label="Branches" value={data.branches.length} />
         <Metric icon={Users} label="Contributors" value={data.contributors.length} />
       </section>
@@ -412,8 +425,63 @@ function Overview({ data, onNavigate }: { data: DashboardData; onNavigate: (view
   );
 }
 
-function Metric({ icon: Icon, label, value }: { icon: typeof Activity; label: string; value: number | string | null }) {
-  return <div className="metric"><Icon size={16} /><span>{label}</span><strong className="mono">{typeof value === "number" ? formatNumber(value) : value ?? "不可用"}</strong></div>;
+function Metric({ icon: Icon, label, value, onClick }: { icon: typeof Activity; label: string; value: number | string | null; onClick?: () => void }) {
+  const content = <><Icon size={16} /><span>{label}</span><strong className="mono">{typeof value === "number" ? formatNumber(value) : value ?? "不可用"}</strong></>;
+  return onClick ? <button type="button" className="metric metric-button" onClick={onClick} aria-label={`查看 ${label} 详情`}>{content}</button> : <div className="metric">{content}</div>;
+}
+
+type WorkItem = IssueSummary | PullRequestSummary;
+
+function WorkItemsView({ data, kind }: { data: DashboardData; kind: "issues" | "pulls" }) {
+  const [state, setState] = useState<"all" | "open" | "closed">("all");
+  const isIssues = kind === "issues";
+  const available = isIssues ? data.status.availability.issues : data.status.availability.pulls;
+  const items: WorkItem[] = [...(isIssues ? data.issues : data.pulls)]
+    .filter((item) => state === "all" || item.state === state)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const openCount = (isIssues ? data.issues : data.pulls).filter((item) => item.state === "open").length;
+
+  return (
+    <div className="view-stack work-items-view">
+      <div className="work-items-heading">
+        <PageHeading
+          eyebrow={isIssues ? "ISSUE SIGNALS" : "PULL REQUEST FLOW"}
+          title={isIssues ? "问题与讨论轨迹" : "代码协作与合并轨迹"}
+          description={isIssues ? "查看问题的状态、作者与更新时间；所有处理操作仍在 GitHub 完成。" : "查看 PR 的作者、评审与合并状态；看板只读，不提供站内合并操作。"}
+        />
+        <div className="work-items-count"><strong className="mono">{available ? openCount : "—"}</strong><span>{available ? "当前开放" : "数据不可用"}</span></div>
+      </div>
+      <div className="segmented" aria-label={isIssues ? "Issue 状态" : "Pull Request 状态"}>
+        {(["all", "open", "closed"] as const).map((filter) => <button key={filter} type="button" aria-pressed={state === filter} className={state === filter ? "is-active" : ""} onClick={() => setState(filter)}>{{ all: "全部", open: "开放", closed: "已关闭" }[filter]}</button>)}
+      </div>
+      {!available ? <div className="empty-state">该类 GitHub 数据当前不可用，请稍后重新同步。</div> : (
+        <section className="work-item-list" aria-label={isIssues ? "Issue 列表" : "Pull Request 列表"}>
+          {items.map((item) => {
+            const merged = "mergedAt" in item && Boolean(item.mergedAt);
+            const reviewers = "reviewers" in item ? item.reviewers : [];
+            return (
+              <a className="work-item-row" href={item.htmlUrl} target="_blank" rel="noreferrer" key={item.number}>
+                <span className={`work-item-status ${merged ? "is-merged" : `is-${item.state}`}`} aria-label={merged ? "已合并" : item.state === "open" ? "开放" : "已关闭"} />
+                <div className="work-item-main">
+                  <span className="work-item-number mono">#{item.number}</span>
+                  <h2>{item.title}</h2>
+                  {item.body ? <p className="work-item-excerpt">{item.body.replace(/\s+/g, " ").trim()}</p> : null}
+                  <p className="work-item-byline">由 <strong>{item.user}</strong> 创建于 {formatDateTime(item.createdAt)}</p>
+                </div>
+                <div className="work-item-meta">
+                  <span>{merged ? "已合并" : item.state === "open" ? "开放" : "已关闭"}</span>
+                  <time dateTime={item.updatedAt}>更新于 {formatDateTime(item.updatedAt)}</time>
+                  {reviewers.length ? <small>{reviewers.length} 位评审者</small> : null}
+                </div>
+                <ArrowUpRight size={16} />
+              </a>
+            );
+          })}
+          {!items.length ? <div className="empty-state">当前筛选条件下没有记录。</div> : null}
+        </section>
+      )}
+    </div>
+  );
 }
 
 function PanelHeading({ eyebrow, title, action, onAction }: { eyebrow: string; title: string; action?: string; onAction?: () => void }) {

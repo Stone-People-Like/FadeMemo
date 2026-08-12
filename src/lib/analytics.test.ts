@@ -3,10 +3,45 @@ import {
   buildBranchGraph,
   filterByRange,
   generateSuggestions,
+  latestRepositoryActivity,
+  recentCommitActivity,
   parseRoadmapMarkdown,
   scoreContributors,
   scoreContributorsForWindow,
 } from "./analytics";
+
+describe("latestRepositoryActivity", () => {
+  it("uses the newest commit, pull request, or issue activity instead of stale repository metadata", () => {
+    const latest = latestRepositoryActivity({
+      repositoryUpdatedAt: "2026-08-09T00:00:00Z",
+      commits: [{ date: "2026-08-11T08:00:00Z" }],
+      pulls: [{ updatedAt: "2026-08-11T10:00:00Z", mergedAt: "2026-08-11T11:00:00Z" }],
+      issues: [{ updatedAt: "2026-08-10T12:00:00Z" }],
+    });
+
+    expect(latest).toBe("2026-08-11T11:00:00Z");
+  });
+
+  it("uses repository metadata only when no commit, pull, or issue activity exists", () => {
+    expect(latestRepositoryActivity({
+      repositoryUpdatedAt: "2026-08-12T12:00:00Z",
+      commits: [{ date: "2026-08-10T08:00:00Z" }],
+      pulls: [],
+      issues: [],
+    })).toBe("2026-08-10T08:00:00Z");
+    expect(latestRepositoryActivity({ repositoryUpdatedAt: "2026-08-12T12:00:00Z", commits: [], pulls: [], issues: [] })).toBe("2026-08-12T12:00:00Z");
+  });
+});
+
+describe("recentCommitActivity", () => {
+  it("returns consecutive calendar days and fills days without commits with zero", () => {
+    expect(recentCommitActivity(
+      [{ date: "2026-08-10T08:00:00Z" }, { date: "2026-08-12T09:00:00Z" }],
+      3,
+      new Date("2026-08-12T12:00:00Z"),
+    )).toEqual([["2026-08-10", 1], ["2026-08-11", 0], ["2026-08-12", 1]]);
+  });
+});
 
 describe("scoreContributors", () => {
   it("returns a transparent weighted score and preserves unavailable metrics", () => {

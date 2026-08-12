@@ -351,6 +351,44 @@ export function filterByRange<T extends { date?: string; lastActiveAt?: string }
   });
 }
 
+export function latestRepositoryActivity(input: {
+  repositoryUpdatedAt: string;
+  commits: Array<Pick<CommitNode, "date">>;
+  pulls: Array<Pick<PullRequestSummary, "updatedAt" | "mergedAt">>;
+  issues: Array<Pick<IssueSummary, "updatedAt">>;
+}): string {
+  const candidates = [
+    ...input.commits.map((commit) => commit.date),
+    ...input.pulls.flatMap((pull) => [pull.updatedAt, pull.mergedAt]),
+    ...input.issues.map((issue) => issue.updatedAt),
+  ].filter((value): value is string => typeof value === "string" && !Number.isNaN(Date.parse(value)));
+
+  if (!candidates.length) return input.repositoryUpdatedAt;
+  return candidates.reduce((latest, value) => Date.parse(value) > Date.parse(latest) ? value : latest);
+}
+
+function localDateKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+export function recentCommitActivity(commits: Array<Pick<CommitNode, "date">>, days = 14, now = new Date()): Array<[string, number]> {
+  const end = new Date(now);
+  end.setHours(0, 0, 0, 0);
+  const counts = new Map<string, number>();
+  for (let offset = days - 1; offset >= 0; offset -= 1) {
+    const date = new Date(end);
+    date.setDate(end.getDate() - offset);
+    counts.set(localDateKey(date), 0);
+  }
+  commits.forEach((commit) => {
+    const date = new Date(commit.date);
+    if (Number.isNaN(date.getTime())) return;
+    const key = localDateKey(date);
+    if (counts.has(key)) counts.set(key, (counts.get(key) ?? 0) + 1);
+  });
+  return [...counts.entries()];
+}
+
 export function roadmapProgress(phases: RoadmapPhase[]): number {
   const items = phases.flatMap((phase) => phase.items);
   if (items.length === 0) return 0;

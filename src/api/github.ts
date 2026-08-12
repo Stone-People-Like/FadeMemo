@@ -235,6 +235,7 @@ export async function fetchDashboardData(force = false): Promise<DashboardData> 
   const pulls: PullRequestSummary[] = rawPulls.map((pull) => ({
     number: pull.number,
     title: pull.title,
+    body: pull.body,
     user: pull.user?.login || "匿名贡献者",
     state: pull.state,
     mergedAt: pull.merged_at,
@@ -325,6 +326,9 @@ export async function fetchDashboardData(force = false): Promise<DashboardData> 
     contributorMap.set(login, created);
     return created;
   };
+  const markContributorActive = (contributor: ContributorInput, value?: string | null) => {
+    if (value && (!contributor.lastActiveAt || value > contributor.lastActiveAt)) contributor.lastActiveAt = value;
+  };
 
   contributorStats.forEach((stat) => {
     const login = stat.author?.login || "匿名贡献者";
@@ -341,19 +345,17 @@ export async function fetchDashboardData(force = false): Promise<DashboardData> 
     contributor.lastActiveAt = weekly.at(-1)?.week;
   });
 
-  if (contributorStats.length === 0) {
-    commits.forEach((commit) => {
-      const contributor = ensureContributor(commit.author);
+  commits.forEach((commit) => {
+    const contributor = ensureContributor(commit.author);
+    if (contributorStats.length === 0) {
       contributor.commits += 1;
       contributor.weekly = [
         ...(contributor.weekly ?? []),
         { week: commit.date, commits: 1, additions: 0, deletions: 0 },
       ];
-      contributor.lastActiveAt = !contributor.lastActiveAt || commit.date > contributor.lastActiveAt
-        ? commit.date
-        : contributor.lastActiveAt;
-    });
-  }
+    }
+    markContributorActive(contributor, commit.date);
+  });
 
   pulls.forEach((pull) => {
     const contributor = ensureContributor(pull.user);
@@ -361,12 +363,15 @@ export async function fetchDashboardData(force = false): Promise<DashboardData> 
       contributor.mergedPullRequests += 1;
       contributor.mergedPullRequestDates = [...(contributor.mergedPullRequestDates ?? []), pull.mergedAt];
     }
+    markContributorActive(contributor, pull.mergedAt);
+    markContributorActive(contributor, pull.updatedAt);
   });
   if (availability.reviews) contributorMap.forEach((contributor) => { contributor.reviews = 0; });
   reviewDates.forEach((dates, login) => {
     const contributor = ensureContributor(login);
     contributor.reviews = dates.length;
     contributor.reviewDates = dates;
+    dates.forEach((date) => markContributorActive(contributor, date));
   });
 
   const contributors = scoreContributors([...contributorMap.values()]);
@@ -375,6 +380,8 @@ export async function fetchDashboardData(force = false): Promise<DashboardData> 
     .map((issue) => ({
       number: issue.number,
       title: issue.title,
+      body: issue.body,
+      user: issue.user?.login || "匿名贡献者",
       state: issue.state,
       createdAt: issue.created_at,
       updatedAt: issue.updated_at,
@@ -479,6 +486,7 @@ interface RawCommitDetail extends RawCommit {
 interface RawPull {
   number: number;
   title: string;
+  body: string | null;
   state: "open" | "closed";
   user: RawUser | null;
   merged_at: string | null;
@@ -491,7 +499,9 @@ interface RawReview { user: RawUser | null; submitted_at: string | null }
 interface RawIssue {
   number: number;
   title: string;
+  body: string | null;
   state: "open" | "closed";
+  user: RawUser | null;
   created_at: string;
   updated_at: string;
   html_url: string;

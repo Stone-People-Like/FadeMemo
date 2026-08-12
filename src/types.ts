@@ -108,6 +108,7 @@ export interface Suggestion {
 export interface PullRequestSummary {
   number: number;
   title: string;
+  body: string | null;
   user: string;
   state: "open" | "closed";
   mergedAt: string | null;
@@ -122,6 +123,8 @@ export interface PullRequestSummary {
 export interface IssueSummary {
   number: number;
   title: string;
+  body: string | null;
+  user: string;
   state: "open" | "closed";
   createdAt: string;
   updatedAt: string;
