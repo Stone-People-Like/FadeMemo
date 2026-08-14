@@ -75,12 +75,12 @@ export default function CallToAction() {
 
                       {/* 文本限制与对齐 */}
                       <div className="w-full text-center space-y-1">
-                        <div className="font-display text-sm font-bold text-white group-hover:text-[#E5D2B8] transition-colors line-clamp-1">
+                        <div className="font-display text-sm font-bold text-white group-hover:text-[#E5D2B8] transition-colors">
                           {link.label}
                         </div>
-                        <div className="text-[11px] font-mono text-slate-500 line-clamp-1 h-4 flex items-center justify-center">
+                        <p className="text-xs text-slate-400 text-center leading-relaxed m-0 p-0 block w-full">
                           {link.tag}
-                        </div>
+                        </p>
                       </div>
                     </div>
                   </Link>
